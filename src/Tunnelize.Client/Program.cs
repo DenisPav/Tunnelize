@@ -13,7 +13,8 @@ async void CreateWebSocket()
 
         while (webSocket.State == WebSocketState.Open)
         {
-            await Task.WhenAll(ReadFromSocket(webSocket), WriteToSocket(webSocket));
+            await ReadFromSocket(webSocket);
+            await WriteToSocket(webSocket);
         }
     }
     catch (Exception e)
@@ -25,20 +26,20 @@ async void CreateWebSocket()
 
 async Task ReadFromSocket(WebSocket webSocket)
 {
-    Console.WriteLine("Reading from socket");
-
     var buffer = new byte[65536];
     var segment = new ArraySegment<byte>(buffer);
 
     await webSocket.ReceiveAsync(segment, CancellationToken.None);
-
+    Console.WriteLine("Reading from websocket");
+    Console.WriteLine(Encoding.UTF8.GetString(segment));
+    
     await WSocket.DataChannel.Writer.WriteAsync(segment);
+    
+    await CreateTcpSocket();
 }
 
 async Task WriteToSocket(WebSocket webSocket)
 {
-    Console.WriteLine("Writing to socket");
-
     while (await TcpSocket.DataChannel.Reader.WaitToReadAsync())
     {
         var tcpData = await TcpSocket.DataChannel.Reader.ReadAsync();
@@ -51,21 +52,29 @@ async Task WriteToSocket(WebSocket webSocket)
             ? WebSocketMessageFlags.EndOfMessage
             : WebSocketMessageFlags.None;
         
+        Console.WriteLine("Writing to websocket");
+        Console.WriteLine(Encoding.UTF8.GetString(tcpData));
+        
         await webSocket.SendAsync(tcpData, WebSocketMessageType.Binary, messageFlag, CancellationToken.None);
+
+        return;
+        
+        // if (isLastItem)
+        //     return;
     }
 }
 
-async void CreateTcpSocket()
+async Task CreateTcpSocket()
 {
     try
     {
         var tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
         await tcpSocket.ConnectAsync("127.0.0.1", 3000);
 
-        while (tcpSocket.Connected)
-        {
+        // while (tcpSocket.Connected)
+        // {
             await Task.WhenAll(TcpSocket.ReadFromTcpSocket(tcpSocket), TcpSocket.WriteToTcpSocket(tcpSocket));
-        }
+        // }
 
         Console.WriteLine("closing TCP client socket");
         tcpSocket.Close();
@@ -78,7 +87,6 @@ async void CreateTcpSocket()
 }
 
 CreateWebSocket();
-CreateTcpSocket();
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
@@ -99,9 +107,6 @@ public static class TcpSocket
 
     public static async Task ReadFromTcpSocket(Socket socket)
     {
-        Console.WriteLine("Reading from TCP socket");
-        Console.WriteLine("Local host app response");
-
         var bytes = new byte[socket.ReceiveBufferSize];
         var dataBuffer = new ArraySegment<byte>(bytes);
         int numberOfBytes;
@@ -114,19 +119,35 @@ public static class TcpSocket
             finalData.AddRange(dataBuffer);
         }
 
+        if (finalData.Count == 0)
+            return;
+        
         dataBuffer = new ArraySegment<byte>(finalData.ToArray());
-        // Console.Write(Encoding.UTF8.GetString(dataBuffer));
+        Console.WriteLine("Reading from local application");
+        Console.WriteLine(Encoding.UTF8.GetString(dataBuffer));
+        
         await DataChannel.Writer.WriteAsync(dataBuffer);
     }
 
     public static async Task WriteToTcpSocket(Socket socket)
     {
-        Console.WriteLine("Writing to TCP socket");
-
         while (await WSocket.DataChannel.Reader.WaitToReadAsync())
         {
+            // var tcpData = await WSocket.DataChannel.Reader.ReadAsync();
+            // await socket.SendAsync(tcpData);
+            
+            
             var tcpData = await WSocket.DataChannel.Reader.ReadAsync();
+            
+            Console.WriteLine("Writing to local application");
+            Console.WriteLine(Encoding.UTF8.GetString(tcpData));
+            
             await socket.SendAsync(tcpData);
+            var isLastItem = WSocket.DataChannel.Reader.Count == 0;
+
+            return;
+            // if (isLastItem)
+            //     return;
         }
     }
 }
