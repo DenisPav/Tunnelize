@@ -38,12 +38,20 @@ async Task ReadFromSocket(WebSocket webSocket)
 async Task WriteToSocket(WebSocket webSocket)
 {
     Console.WriteLine("Writing to socket");
-    
+
     while (await TcpSocket.DataChannel.Reader.WaitToReadAsync())
     {
         var tcpData = await TcpSocket.DataChannel.Reader.ReadAsync();
-        await webSocket.SendAsync(tcpData, WebSocketMessageType.Binary, WebSocketMessageFlags.EndOfMessage,
-            CancellationToken.None);
+        var isLastItem = TcpSocket.DataChannel.Reader.Count == 0;
+        // Console.WriteLine("------------------------------");
+        // Console.Write(Encoding.UTF8.GetString(tcpData));
+        // Console.WriteLine();
+        // Console.WriteLine("------------------------------");
+        var messageFlag = isLastItem
+            ? WebSocketMessageFlags.EndOfMessage
+            : WebSocketMessageFlags.None;
+        
+        await webSocket.SendAsync(tcpData, WebSocketMessageType.Binary, messageFlag, CancellationToken.None);
     }
 }
 
@@ -53,7 +61,7 @@ async void CreateTcpSocket()
     {
         var tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
         await tcpSocket.ConnectAsync("127.0.0.1", 3000);
-        
+
         while (tcpSocket.Connected)
         {
             await Task.WhenAll(TcpSocket.ReadFromTcpSocket(tcpSocket), TcpSocket.WriteToTcpSocket(tcpSocket));
@@ -92,18 +100,29 @@ public static class TcpSocket
     public static async Task ReadFromTcpSocket(Socket socket)
     {
         Console.WriteLine("Reading from TCP socket");
+        Console.WriteLine("Local host app response");
 
         var bytes = new byte[socket.ReceiveBufferSize];
         var dataBuffer = new ArraySegment<byte>(bytes);
-        _ = await socket.ReceiveAsync(dataBuffer);
+        int numberOfBytes;
+        var finalData = new List<byte>();
+        
+        while ((numberOfBytes = await socket.ReceiveAsync(dataBuffer)) != 0)
+        {
+            if (numberOfBytes != bytes.Length)
+                dataBuffer = dataBuffer[..numberOfBytes];
+            finalData.AddRange(dataBuffer);
+        }
 
+        dataBuffer = new ArraySegment<byte>(finalData.ToArray());
+        // Console.Write(Encoding.UTF8.GetString(dataBuffer));
         await DataChannel.Writer.WriteAsync(dataBuffer);
     }
 
     public static async Task WriteToTcpSocket(Socket socket)
     {
         Console.WriteLine("Writing to TCP socket");
-        
+
         while (await WSocket.DataChannel.Reader.WaitToReadAsync())
         {
             var tcpData = await WSocket.DataChannel.Reader.ReadAsync();

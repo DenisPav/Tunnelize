@@ -54,9 +54,17 @@ public static class TcpSocket
 
         var bytes = new byte[socket.ReceiveBufferSize];
         var dataBuffer = new ArraySegment<byte>(bytes);
-        var result = await socket.ReceiveAsync(dataBuffer);
-        
-        await DataChannel.Writer.WriteAsync(dataBuffer);
+        int numberOfBytes;
+
+        while ((numberOfBytes = await socket.ReceiveAsync(dataBuffer)) != 0)
+        {
+            if (numberOfBytes != bytes.Length)
+                dataBuffer = dataBuffer[..numberOfBytes];
+            await DataChannel.Writer.WriteAsync(dataBuffer);
+
+            // await Task.Delay(5000);
+            // Console.Write(Encoding.UTF8.GetString(dataBuffer));
+        }
     }
 
     public static async Task WriteToTcpSocket(Socket socket)
@@ -66,11 +74,18 @@ public static class TcpSocket
         //can be removed since after writing socket can be closed
         // while (await WSocket.DataChannel.Reader.WaitToReadAsync())
         // {
-            var tcpData = await WSocket.DataChannel.Reader.ReadAsync();
-            socket.Send(tcpData, SocketFlags.None);
-            // socket.Send(new byte[]{0});
-            // await Task.Delay(2000);
+        // var tcpData = await WSocket.DataChannel.Reader.ReadAsync();
+        // socket.Send(tcpData, SocketFlags.None);
+        // socket.Send(new byte[]{0});
+        // await Task.Delay(2000);
         // }
+        
+        
+        while (await WSocket.DataChannel.Reader.WaitToReadAsync())
+        {
+            var tcpData = await WSocket.DataChannel.Reader.ReadAsync();
+            await socket.SendAsync(tcpData);
+        }
     }
 }
 
@@ -105,10 +120,18 @@ public class HandleWebSocketMiddleware : IMiddleware
 
         var buffer = new byte[65536];
         var segment = new ArraySegment<byte>(buffer);
+        WebSocketReceiveResult result;
 
-        await webSocket.ReceiveAsync(segment, CancellationToken.None);
-
-        await WSocket.DataChannel.Writer.WriteAsync(segment);
+        do
+        {
+            result = await webSocket.ReceiveAsync(segment, CancellationToken.None);
+            if (result.Count != buffer.Length)
+                segment = segment[..result.Count];
+            Console.WriteLine(Encoding.UTF8.GetString(segment));
+            await WSocket.DataChannel.Writer.WriteAsync(segment);
+            
+            
+        } while (result.EndOfMessage == false);
     }
 
     public async Task WriteToSocket(WebSocket webSocket)
@@ -118,9 +141,18 @@ public class HandleWebSocketMiddleware : IMiddleware
         while (await TcpSocket.DataChannel.Reader.WaitToReadAsync())
         {
             var tcpData = await TcpSocket.DataChannel.Reader.ReadAsync();
-            await webSocket.SendAsync(tcpData, WebSocketMessageType.Binary, WebSocketMessageFlags.EndOfMessage,
-                CancellationToken.None);
-            ;
+            var isLastItem = TcpSocket.DataChannel.Reader.Count == 0;
+            Console.Write(Encoding.UTF8.GetString(tcpData));
+            var messageFlag = isLastItem
+                ? WebSocketMessageFlags.EndOfMessage
+                : WebSocketMessageFlags.None;
+
+            await webSocket.SendAsync(tcpData, WebSocketMessageType.Binary, messageFlag, CancellationToken.None);
+
+            // var tcpData = await TcpSocket.DataChannel.Reader.ReadAsync();
+            // await webSocket.SendAsync(tcpData, WebSocketMessageType.Binary, WebSocketMessageFlags.EndOfMessage,
+            //     CancellationToken.None);
+            // ;
         }
     }
 }
