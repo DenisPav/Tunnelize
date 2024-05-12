@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+<div class="vertical">
+    <div class="row">
+        <div class="col">
+        </div>
+        <div class="col">
+            <h2>Tunnelize</h2>
+
+            <fieldset>
+                <legend>Login</legend>
+                <form hx-post="/authentication/login">
+                    <AntiforgeryToken/>
+
+                    <div>
+                        <label>Email</label>
+                        <input type="text" name="email" placeholder="Joe">
+                    </div>
+
+                    <div>
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="Mama">
+                    </div>
+
+                    <br/>
+
+                    <div>
+                        <button>
+                            Login
+                        </button>
+                    </div>
+
+                </form>
+            </fieldset>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿@page "/";
+@using Tunnelize.Server.Components.Authentication
+@using Tunnelize.Server.Components.Dashboards
+
+<html lang="en">
+<head>
+    <title>Tunnelize server</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <link rel="stylesheet" href="https://unpkg.com/chota@latest">
+    <style>
+        .vertical {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>
+@if (HttpContext?.User.Identity!.IsAuthenticated == false)
+{
+    <Login/>
+}
+else
+{
+    <Dashboard/>
+}
+</body>
+</html>
+
+
+@code {
+    [CascadingParameter] public HttpContext? HttpContext { get; set; }
+}

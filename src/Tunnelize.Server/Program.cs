@@ -1,21 +1,64 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
+using System.Security.Claims;
 using System.Threading.Channels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebSockets;
+using Tunnelize.Server.Components;
+using Tunnelize.Server.Components.ApiKeys;
 
-CreateTcpListener();
+// CreateTcpListener();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddWebSockets(_ => { });
+builder.Services.AddAntiforgery();
+builder.Services.AddRazorComponents();
+builder.Services.AddAuthentication()
+    .AddCookie();
+builder.Services.AddAuthorization();
 builder.Services.AddScoped<HandleWebSocketMiddleware>();
 var app = builder.Build();
 
 app.UseWebSockets();
 app.UseMiddleware<HandleWebSocketMiddleware>();
-app.MapGet("/", () => "Hello World!");
-app.Run();
+app.UseAntiforgery();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapRazorComponents<App>();
+var authRoutes = app.MapGroup("authentication");
+authRoutes.MapPost("/login", async (
+    [FromForm] LoginRequest request,
+    HttpContext context,
+    [FromServices] IAuthenticationService authenticationService) =>
+{
+    context.Response.Headers.Append("HX-Redirect", "/");
+    var claims = new[]
+    {
+        new Claim(ClaimTypes.Email, "denis.pav@hotmail.com"),
+        new Claim(ClaimTypes.Name, "denis.pav@hotmail.com")
+    };
+    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+    var principal = new ClaimsPrincipal(claimsIdentity);
+    await authenticationService.SignInAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, principal,
+        null);
 
+    return TypedResults.Empty;
+});
+authRoutes.MapPost("/logout", async (
+    HttpContext context,
+    [FromServices] IAuthenticationService authenticationService) =>
+{
+    context.Response.Headers.Append("HX-Redirect", "/");
+    await authenticationService.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, null);
+
+    return TypedResults.Empty;
+});
+app.Map("/api-keys/create", () => new RazorComponentResult<Create>());
+app.Run();
 
 async void CreateTcpListener()
 {
@@ -142,8 +185,14 @@ public class HandleWebSocketMiddleware : IMiddleware
         var tcpData = new ArraySegment<byte>(data.ToArray());
         await webSocket.SendAsync(
             tcpData,
-            WebSocketMessageType.Binary, 
+            WebSocketMessageType.Binary,
             WebSocketMessageFlags.EndOfMessage,
             CancellationToken.None);
     }
+}
+
+public class LoginRequest
+{
+    public string Email { get; set; }
+    public string Password { get; set; }
 }
