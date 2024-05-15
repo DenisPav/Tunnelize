@@ -15,10 +15,19 @@ using Tunnelize.Server.Components.ApiKeys;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddWebSockets(_ => { });
-builder.Services.AddAntiforgery();
+builder.Services.AddAntiforgery(opts =>
+{
+    opts.Cookie.Name = "af";
+});
 builder.Services.AddRazorComponents();
 builder.Services.AddAuthentication()
-    .AddCookie();
+    .AddCookie(opts =>
+    {
+        opts.Cookie.Name = "ak";
+        opts.LoginPath = "/login";
+        opts.LogoutPath = "/logout";
+        opts.ReturnUrlParameter = "ru";
+    });
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<HandleWebSocketMiddleware>();
 var app = builder.Build();
@@ -35,7 +44,7 @@ authRoutes.MapPost("/login", async (
     HttpContext context,
     [FromServices] IAuthenticationService authenticationService) =>
 {
-    context.Response.Headers.Append("HX-Redirect", "/");
+    context.Response.Headers.Append("HX-Redirect", "/dashboard");
     var claims = new[]
     {
         new Claim(ClaimTypes.Email, "denis.pav@hotmail.com"),
@@ -52,7 +61,7 @@ authRoutes.MapPost("/logout", async (
     HttpContext context,
     [FromServices] IAuthenticationService authenticationService) =>
 {
-    context.Response.Headers.Append("HX-Redirect", "/");
+    context.Response.Headers.Append("HX-Redirect", "/login");
     await authenticationService.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, null);
 
     return TypedResults.Empty;

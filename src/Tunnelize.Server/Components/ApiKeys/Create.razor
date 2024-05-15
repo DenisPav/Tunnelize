@@ -1,5 +1,25 @@
-﻿<div class="container">
+﻿@page "/create"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<html lang="en">
+<head>
+    <title>Tunnelize server</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <link rel="stylesheet" href="https://unpkg.com/chota@latest">
+    <style>
+        .vertical {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
     <div class="row">
         <h2>this is the title</h2>
     </div>
 </div>
+</body>
+</html>

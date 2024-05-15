@@ -1,4 +1,8 @@
-﻿<div class="vertical">
+﻿@page "/dashboard"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<div class="vertical">
     <div class="row">
         <div class="col"></div>
         <div class="col">
@@ -10,7 +14,7 @@
                 <div class="col"></div>
                 <div class="col">
                     <div class="pull-right">
-                        <button hx-get="/api-keys/create" hx-swap="outerHTML">Create</button>
+                        <button hx-get="/api-keys/create">Create</button>
                     </div>
                 </div>
             </div>
