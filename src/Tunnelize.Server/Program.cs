@@ -66,7 +66,20 @@ authRoutes.MapPost("/logout", async (
 
     return TypedResults.Empty;
 });
-app.Map("/api-keys/create", () => new RazorComponentResult<Create>());
+app.MapGet("/api-keys/create", (HttpContext context) =>
+{
+    context.Response.Headers.Append("HX-Redirect", "/create");
+    return TypedResults.Empty;
+});
+app.MapPost("/api-keys/create", (HttpContext context) =>
+{
+    context.Response.Headers.Append("HX-Redirect", "/dashboard");
+    return TypedResults.Empty;
+});
+app.MapDelete("/api-keys/delete/{id}", (HttpContext context) =>
+{
+    return TypedResults.Empty;
+});
 app.Run();
 
 async void CreateTcpListener()

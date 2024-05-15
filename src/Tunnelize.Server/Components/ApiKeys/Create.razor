@@ -1,25 +1,39 @@
 ﻿@page "/create"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Forms
 @attribute [Authorize]
 
-<html lang="en">
-<head>
-    <title>Tunnelize server</title>
-    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-    <link rel="stylesheet" href="https://unpkg.com/chota@latest">
-    <style>
-        .vertical {
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-    </style>
-</head>
-<body>
-<div class="container">
+<div class="vertical">
     <div class="row">
-        <h2>this is the title</h2>
+        <div class="col">
+        </div>
+        <div class="col">
+            <h2>Create API key</h2>
+
+            <fieldset>
+                <legend>Fields</legend>
+                <form hx-post="/api-keys/create">
+                    <AntiforgeryToken/>
+
+                    <div>
+                        <label>Subdomain</label>
+                        <input type="text" name="subdomain" placeholder="***">
+                    </div>
+
+                    <br/>
+
+                    <div>
+                        <button>
+                            Create
+                        </button>
+                    </div>
+
+                    <br/>
+
+                </form>
+            </fieldset>
+        </div>
+        <div class="col">
+        </div>
     </div>
 </div>
-</body>
-</html>

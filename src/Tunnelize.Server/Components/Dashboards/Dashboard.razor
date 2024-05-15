@@ -21,15 +21,28 @@
             <hr>
             <div class="row">
                 <div class="col">
-                    <table>
+                    <table hx-target="closest tr">
                         <tr>
                             <th>ID</th>
+                            <th>Subdomain</th>
                             <th>Actions</th>
                         </tr>
                         <tr>
                             <td>@Guid.Empty</td>
                             <td>
-                                <button>Delete</button>
+                                kdjsad 1
+                            </td>
+                            <td>
+                                <button hx-delete="/api-keys/delete/dsads" hx-swap="outerHTML">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>@Guid.Empty</td>
+                            <td>
+                                kdjsad 2
+                            </td>
+                            <td>
+                                <button hx-delete="/api-keys/delete/dsads" hx-swap="outerHTML">Delete</button>
                             </td>
                         </tr>
                     </table>
