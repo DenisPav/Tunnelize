@@ -5,16 +5,18 @@ namespace Tunnelize.Server.Services;
 
 public static class TcpServer
 {
+    private static TcpListener _listener = null!;
+    
     public static async void CreateTcpListener()
     {
-        var listener = new TcpListener(IPAddress.Loopback, 8080);
-        listener.Start();
+        _listener = new TcpListener(IPAddress.Loopback, 8080);
+        _listener.Start();
 
         while (true)
         {
             try
             {
-                var socket = await listener.AcceptSocketAsync();
+                var socket = await _listener.AcceptSocketAsync();
 
                 await TcpSocket.ReadFromTcpSocket(socket);
                 await HandleWebSocketMiddleware.WriteToSocket(HandleWebSocketMiddleware.CurrentWebSocket);
@@ -29,5 +31,11 @@ public static class TcpServer
                 throw;
             }
         }
+    }
+
+    public static void Stop()
+    {
+        _listener.Stop();
+        _listener.Dispose();
     }
 }
