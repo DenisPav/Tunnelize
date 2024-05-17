@@ -1,5 +1,8 @@
 ﻿using System.Net.Sockets;
+using System.Text;
 using System.Threading.Channels;
+using Superpower;
+using Tunnelize.Server.Parsers;
 
 namespace Tunnelize.Server.Services;
 
@@ -18,8 +21,11 @@ public static class TcpSocket
             if (numberOfBytes != bytes.Length)
                 dataBuffer = dataBuffer[..numberOfBytes];
 
+            var decoded = Encoding.UTF8.GetString(dataBuffer);
+            var result = HttpParsers.HostParser.TryParse(decoded);
+            Console.WriteLine(result.Value.ToString());
+            
             await DataChannel.Writer.WriteAsync(dataBuffer);
-
             return;
         }
     }

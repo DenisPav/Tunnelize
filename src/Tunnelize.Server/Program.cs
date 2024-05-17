@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.WebSockets;
 using Microsoft.EntityFrameworkCore;
+using Tunnelize.Server;
 using Tunnelize.Server.Components;
 using Tunnelize.Server.Persistence;
 using Tunnelize.Server.Routes;
 using Tunnelize.Server.Services;
-
-TcpServer.CreateTcpListener();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DatabaseContext>(opts => opts.UseSqlite("Data Source=./app.db;"));
