@@ -23,6 +23,7 @@ builder.Services.AddAuthentication()
         opts.ReturnUrlParameter = "ru";
     });
 builder.Services.AddAuthorization();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddHostedService<StartupHostedService>();
 builder.Services.AddScoped<HandleWebSocketMiddleware>();
 var app = builder.Build();

@@ -41,3 +41,14 @@
         </div>
     </div>
 </div>
+
+@code {
+    [Inject] IHttpContextAccessor HttpContextAccessor { get; set; } = null!;
+    [Inject] NavigationManager NavigationManager { get; set; } = null!;
+    
+    protected override void OnParametersSet()
+    {
+        if(HttpContextAccessor.HttpContext!.User.Identity!.IsAuthenticated)
+            NavigationManager.NavigateTo("/dashboard");
+    }
+}
