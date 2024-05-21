@@ -1,7 +1,20 @@
-﻿namespace Tunnelize.Server.Routes.Authentication;
+﻿using FluentValidation;
+using Injectio.Attributes;
 
-public class LoginRequest
+namespace Tunnelize.Server.Routes.Authentication;
+
+public record LoginRequest(string Email, string Password);
+
+[RegisterSingleton]
+public class LoginRequestValidator : AbstractValidator<LoginRequest>
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public LoginRequestValidator()
+    {
+        RuleFor(x => x.Email)
+            .NotEmpty()
+            .EmailAddress();
+
+        RuleFor(x => x.Email)
+            .NotEmpty();
+    }
 }

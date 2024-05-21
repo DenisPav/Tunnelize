@@ -1,7 +1,9 @@
 ﻿using System.Net.WebSockets;
+using Injectio.Attributes;
 
 namespace Tunnelize.Server.Services;
 
+[RegisterScoped]
 public class HandleWebSocketMiddleware : IMiddleware
 {
     public static WebSocket CurrentWebSocket;

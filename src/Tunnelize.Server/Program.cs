@@ -25,7 +25,7 @@ builder.Services.AddAuthentication()
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHostedService<StartupHostedService>();
-builder.Services.AddScoped<HandleWebSocketMiddleware>();
+builder.Services.AddTunnelizeServer();
 var app = builder.Build();
 
 app.UseWebSockets();
