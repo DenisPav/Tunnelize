@@ -32,6 +32,6 @@ app.UseMiddleware<HandleWebSocketMiddleware>();
 app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapRazorComponents<App>();
+app.MapRazorComponents<App>().RequireAuthorization(opts => opts.RequireAuthenticatedUser());
 app.MapRoutes();
 app.Run();

@@ -1,6 +1,8 @@
 ﻿@page "/"
 @page "/login"
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Forms
+@attribute [AllowAnonymous]
 
 <div class="vertical">
     <div class="row">
