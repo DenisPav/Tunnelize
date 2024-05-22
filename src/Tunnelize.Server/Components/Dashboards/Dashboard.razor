@@ -17,33 +17,9 @@
                 </div>
             </div>
             <hr>
+            
             <div class="row">
-                <div class="col">
-                    <table hx-target="closest tr">
-                        <tr>
-                            <th>ID</th>
-                            <th>Subdomain</th>
-                            <th>Actions</th>
-                        </tr>
-                        <tr>
-                            <td>@Guid.Empty</td>
-                            <td>
-                                kdjsad 1
-                            </td>
-                            <td>
-                                <button hx-delete="/api-keys/delete/dsads" hx-swap="outerHTML">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>@Guid.Empty</td>
-                            <td>
-                                kdjsad 2
-                            </td>
-                            <td>
-                                <button hx-delete="/api-keys/delete/dsads" hx-swap="outerHTML">Delete</button>
-                            </td>
-                        </tr>
-                    </table>
+                <div class="col" hx-get="/api-keys/list" hx-swap="innerHTML" hx-trigger="load">
                 </div>
             </div>
             <button hx-post="/authentication/logout">Logout</button>

@@ -1,0 +1,24 @@
+﻿@using Tunnelize.Server.Routes.ApiKeys
+<table hx-target="closest tr">
+    <tr>
+        <th>ID</th>
+        <th>Subdomain</th>
+        <th>Actions</th>
+    </tr>
+    @foreach (var apiKey in ApiKeys)
+    {
+        <tr>
+            <td>@apiKey.Id</td>
+            <td>
+                @apiKey.SubDomain
+            </td>
+            <td>
+                <button hx-delete="/api-keys/delete/dsads" hx-swap="outerHTML">Delete</button>
+            </td>
+        </tr>
+    }
+</table>
+
+@code {
+    [Parameter] public IEnumerable<ApiKeyResponse> ApiKeys { get; set; }
+}

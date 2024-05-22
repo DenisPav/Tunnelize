@@ -7,7 +7,7 @@ using Tunnelize.Server.Routes;
 using Tunnelize.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<DatabaseContext>(opts => opts.UseSqlite("Data Source=./app.db;"));
+builder.Services.AddDbContext<DatabaseContext>(opts => opts.UseSqlite("Data Source=./app.db;").EnableSensitiveDataLogging());
 builder.Services.AddWebSockets(_ => { });
 builder.Services.AddAntiforgery(opts =>
 {
