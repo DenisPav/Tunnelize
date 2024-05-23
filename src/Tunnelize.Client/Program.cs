@@ -7,6 +7,7 @@ async void CreateWebSocket()
     try
     {
         var webSocket = new ClientWebSocket();
+        webSocket.Options.SetRequestHeader("x-tunnelize-key", "73441f56-7751-440e-a26c-0543a03ca9ad");
         var serverLocation = new Uri("ws://127.0.0.1:5000");
         await webSocket.ConnectAsync(serverLocation, CancellationToken.None);
 

@@ -1,5 +1,8 @@
 ﻿using System.Net.WebSockets;
 using Injectio.Attributes;
+using Microsoft.EntityFrameworkCore;
+using Tunnelize.Server.Persistence;
+using Tunnelize.Server.Persistence.Entities;
 
 namespace Tunnelize.Server.Services;
 
@@ -18,6 +21,22 @@ public class HandleWebSocketMiddleware : IMiddleware
             return;
         }
 
+        context.Request.Headers.TryGetValue("x-tunnelize-key", out var apiKey);
+        var apiKeyStringValue = apiKey.FirstOrDefault();
+        if (Guid.TryParse(apiKeyStringValue, out var parsedApiKey) == false)
+        {
+            await next(context);
+            return;
+        }
+
+        var databaseContext = context.RequestServices.GetRequiredService<DatabaseContext>();
+        var apiKeyExists = await databaseContext.Set<ApiKey>().AnyAsync(x => x.Id == parsedApiKey, context.RequestAborted);
+        if (apiKeyExists == false)
+        {
+            await next(context);
+            return;
+        }
+        
         var webSocket = await context.WebSockets.AcceptWebSocketAsync();
         CurrentWebSocket = webSocket;
         while (webSocket.State == WebSocketState.Open)
