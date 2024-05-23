@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Tunnelize.Server.Components.ApiKeys;
-using Tunnelize.Server.Components.Dashboards;
 using Tunnelize.Server.Persistence;
 using Tunnelize.Server.Persistence.Entities;
 
