@@ -1,7 +1,7 @@
 ﻿@page "/create"
 @using Microsoft.AspNetCore.Components.Forms
 
-<div class="vertical">
+<div id="create-form" class="vertical" hx-target="#create-form">
     <div class="row">
         <div class="col">
         </div>
@@ -10,12 +10,21 @@
 
             <fieldset>
                 <legend>Fields</legend>
-                <form hx-post="/api-keys/create">
+                <form hx-post="/api-keys/create" hx-swap="outerHTML">
                     <AntiforgeryToken/>
 
                     <div>
                         <label>Subdomain</label>
-                        <input type="text" name="subdomain" placeholder="***">
+                        @if (HasErrors)
+                        {
+                            <input class="error" type="text" name="subdomain" placeholder="***">
+                            <span>Can't be empty or already used!</span>
+                        }
+                        else
+                        {
+                            <input type="text" name="subdomain" placeholder="***">
+                        }
+                        
                     </div>
 
                     <br/>
@@ -35,3 +44,7 @@
         </div>
     </div>
 </div>
+
+@code {
+    [Parameter] public bool HasErrors { get; set; }
+}
