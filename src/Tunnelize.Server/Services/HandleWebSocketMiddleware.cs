@@ -1,4 +1,5 @@
-﻿using System.Net.WebSockets;
+﻿using System.Collections.Concurrent;
+using System.Net.WebSockets;
 using Injectio.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Tunnelize.Server.Persistence;
@@ -9,7 +10,7 @@ namespace Tunnelize.Server.Services;
 [RegisterScoped]
 public class HandleWebSocketMiddleware : IMiddleware
 {
-    public static WebSocket CurrentWebSocket;
+    public static IDictionary<string, WebSocket> WebSocketMap = new ConcurrentDictionary<string, WebSocket>();
 
     public async Task InvokeAsync(
         HttpContext context,
@@ -21,8 +22,8 @@ public class HandleWebSocketMiddleware : IMiddleware
             return;
         }
 
-        context.Request.Headers.TryGetValue("x-tunnelize-key", out var apiKey);
-        var apiKeyStringValue = apiKey.FirstOrDefault();
+        context.Request.Headers.TryGetValue("x-tunnelize-key", out var apiKeyHeader);
+        var apiKeyStringValue = apiKeyHeader.FirstOrDefault();
         if (Guid.TryParse(apiKeyStringValue, out var parsedApiKey) == false)
         {
             await next(context);
@@ -30,19 +31,28 @@ public class HandleWebSocketMiddleware : IMiddleware
         }
 
         var databaseContext = context.RequestServices.GetRequiredService<DatabaseContext>();
-        var apiKeyExists = await databaseContext.Set<ApiKey>().AnyAsync(x => x.Id == parsedApiKey, context.RequestAborted);
-        if (apiKeyExists == false)
+        var apiKey = await databaseContext.Set<ApiKey>().SingleOrDefaultAsync(x => x.Id == parsedApiKey, context.RequestAborted);
+        if (apiKey is null)
+        {
+            await next(context);
+            return;
+        }
+
+        if (WebSocketMap.ContainsKey(apiKey.SubDomain))
         {
             await next(context);
             return;
         }
         
         var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-        CurrentWebSocket = webSocket;
+        WebSocketMap.Add(apiKey.SubDomain, webSocket);
+        
         while (webSocket.State == WebSocketState.Open)
         {
-            await Task.Delay(Timeout.Infinite);
+            await Task.Delay(20000);
         }
+
+        WebSocketMap.Remove(apiKey.SubDomain);
     }
 
     public static async Task ReadFromSocket(WebSocket webSocket)

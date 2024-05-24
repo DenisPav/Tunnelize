@@ -18,7 +18,7 @@ public class StartupHostedService(
         await db.Database.MigrateAsync(cancellationToken);
         
         log.LogInformation("Creating TCP listener");
-        TcpServer.CreateTcpListener();
+        TcpServer.CreateTcpListener(cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

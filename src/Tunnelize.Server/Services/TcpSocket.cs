@@ -10,7 +10,7 @@ public static class TcpSocket
 {
     public static Channel<ArraySegment<byte>> DataChannel = Channel.CreateUnbounded<ArraySegment<byte>>();
 
-    public static async Task ReadFromTcpSocket(Socket socket)
+    public static async Task<string> ReadFromTcpSocket(Socket socket)
     {
         var bytes = new byte[socket.ReceiveBufferSize];
         var dataBuffer = new ArraySegment<byte>(bytes);
@@ -20,14 +20,16 @@ public static class TcpSocket
         {
             if (numberOfBytes != bytes.Length)
                 dataBuffer = dataBuffer[..numberOfBytes];
-
-            var decoded = Encoding.UTF8.GetString(dataBuffer);
-            var result = HttpParsers.HostParser.TryParse(decoded);
-            Console.WriteLine(result.Value.ToString());
             
             await DataChannel.Writer.WriteAsync(dataBuffer);
-            return;
+            
+            var decoded = Encoding.UTF8.GetString(dataBuffer);
+            var result = HttpParsers.HostParser.TryParse(decoded);
+            return result.Value.ToString();
         }
+
+        //TODO: should not happen
+        return null;
     }
 
     public static async Task WriteToTcpSocket(Socket socket)
