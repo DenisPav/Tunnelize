@@ -3,7 +3,7 @@
     <tr>
         <th>ID</th>
         <th>Subdomain</th>
-        <th>Actions</th>
+        <th class="pull-right">Actions</th>
     </tr>
     @foreach (var apiKey in ApiKeys)
     {
@@ -12,7 +12,7 @@
             <td>
                 @apiKey.SubDomain
             </td>
-            <td>
+            <td class="pull-right">
                 <button hx-delete="/api-keys/delete/@apiKey.Id" hx-swap="outerHTML">Delete</button>
             </td>
         </tr>

@@ -6,7 +6,18 @@
     <title>Tunnelize server</title>
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
     <link rel="stylesheet" href="https://unpkg.com/chota@latest">
-    <HeadOutlet />
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        .vertical {
+            position: relative;
+            top: 50%;
+            transform: translateY(-70%);
+        }
+    </style>
+    <HeadOutlet/>
 </head>
 <body>
 <Routes/>
@@ -15,5 +26,5 @@
 
 
 @code {
-    [CascadingParameter] public HttpContext? HttpContext { get; set; }
+[CascadingParameter] public HttpContext? HttpContext { get; set; }
 }
