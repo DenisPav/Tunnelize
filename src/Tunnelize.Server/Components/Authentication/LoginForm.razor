@@ -1,0 +1,57 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+<fieldset hx-target="fieldset">
+    <legend>Login</legend>
+    <form hx-post="/authentication/login" hx-swap="outerHTML">
+        <AntiforgeryToken/>
+
+        <div>
+            <label>Email</label>
+            @if (IsEmailInvalid)
+            {
+                <input class="error" type="text" name="email" placeholder="Joe">
+                <span>Field must contain valid email!</span>    
+            }
+            else
+            {
+                <input type="text" name="email" placeholder="Joe">    
+            }
+        </div>
+
+        <br>
+        
+        <div>
+            <label>Password</label>
+            @if (IsEmailInvalid)
+            {
+                <input class="error" type="password" name="password" placeholder="Mama">
+                <span>Password can't be empty!</span>
+            }
+            else
+            {
+                <input type="password" name="password" placeholder="Mama">
+            }
+        </div>
+
+        <br/>
+
+        <div>
+            @if (IsCombinationInvalid)
+            {
+                <span>Email and password combination is not valid!</span>
+            }
+            <button>
+                Login
+            </button>
+        </div>
+
+        <br>
+
+    </form>
+</fieldset>
+
+@code {
+    [Parameter] public bool IsEmailInvalid { get; set; }
+    [Parameter] public bool IsPasswordInvalid { get; set; }
+    [Parameter] public bool IsCombinationInvalid { get; set; }
+}
