@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Tunnelize.Server.Persistence.Entities.Configurations;
@@ -17,5 +19,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         
         builder.Property(x => x.PasswordHash)
             .IsRequired();
+        
+        builder.HasData(new User
+        {
+            Id = Guid.NewGuid(),
+            Email = "test@email.com",
+            PasswordHash = "AQAAAAIAAYagAAAAENDbkRIeCytZXQTBw4dWGgoFvlkq2yZKfx9n1OtFNQr+rHBkbMa2T5Zi2NlCuEm6zw=="
+        });
     }
 }

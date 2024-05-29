@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tunnelize.Server.Persistence;
 
@@ -10,9 +11,11 @@ using Tunnelize.Server.Persistence;
 namespace Tunnelize.Server.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240529201317_user-api-keys")]
+    partial class userapikeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.5");
@@ -55,14 +58,6 @@ namespace Tunnelize.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("47a63e63-a677-47ac-92fa-f74712ac6a60"),
-                            Email = "test@email.com",
-                            PasswordHash = "AQAAAAIAAYagAAAAENDbkRIeCytZXQTBw4dWGgoFvlkq2yZKfx9n1OtFNQr+rHBkbMa2T5Zi2NlCuEm6zw=="
-                        });
                 });
 
             modelBuilder.Entity("Tunnelize.Server.Persistence.Entities.ApiKey", b =>

@@ -15,5 +15,12 @@ public class ApiKeyConfiguration : IEntityTypeConfiguration<ApiKey>
         builder.Property(x => x.SubDomain)
             .HasMaxLength(10)
             .IsRequired();
+
+        builder.Property(x => x.UserId)
+            .IsRequired();
+        builder.HasOne(x => x.User)
+            .WithMany(x => x.ApiKeys)
+            .HasForeignKey(x => x.UserId)
+            .IsRequired();
     }
 }

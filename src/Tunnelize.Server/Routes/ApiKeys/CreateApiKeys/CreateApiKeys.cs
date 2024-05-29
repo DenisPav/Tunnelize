@@ -14,7 +14,7 @@ public class CreateApiKeys : IRouteMapper
         builder.MapPost("/api-keys/create", Handle).DisableAntiforgery();
     }
 
-    private async Task<IResult> Handle(
+    private static async Task<IResult> Handle(
         [FromForm] CreateApiKeyRequest request,
         IValidator<CreateApiKeyRequest> validator,
         DatabaseContext db,
@@ -28,6 +28,7 @@ public class CreateApiKeys : IRouteMapper
         }
 
         var entity = new ApiKeyMapper().MapFromRequest(request);
+        entity.UserId = context.GetUserId();
 
         await db.Set<ApiKey>().AddAsync(entity, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
