@@ -1,0 +1,39 @@
+﻿@page "/login/code"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@attribute [AllowAnonymous]
+
+<div class="vertical">
+    <div class="row">
+        <div class="col">
+        </div>
+        <div class="col">
+            <h2>Tunnelize</h2>
+
+            <fieldset hx-target="fieldset">
+                <legend>Login</legend>
+                <form hx-post="/authentication/login/code" hx-swap="outerHTML">
+                    <AntiforgeryToken/>
+
+                    <div>
+                        <label>Code</label>
+                        <input type="text" name="code" placeholder="******">
+                    </div>
+
+                    <br>
+
+                    <div>
+                        <button type="submit">
+                            Submit
+                        </button>
+                    </div>
+
+                    <br>
+
+                </form>
+            </fieldset>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+</div>

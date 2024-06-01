@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +16,7 @@ public class Logout : IRouteMapper
         [FromServices] IAuthenticationService authenticationService)
     {
         context.Response.Headers.Append("HX-Redirect", "/login");
-        await authenticationService.SignOutAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, null);
+        await authenticationService.SignOutAsync(context, "loginCookie", null);
 
         return TypedResults.Empty;
     }

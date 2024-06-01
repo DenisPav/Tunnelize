@@ -1,11 +1,15 @@
 ﻿using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text.Json;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Tunnelize.Server.Authentication;
 using Tunnelize.Server.Components.Authentication;
 using Tunnelize.Server.Persistence;
 using Tunnelize.Server.Persistence.Entities;
@@ -23,6 +27,7 @@ public class Login : IRouteMapper
         [FromForm] LoginRequest request,
         IAuthenticationService authenticationService,
         IValidator<LoginRequest> validator,
+        IAuthCodeGenerator authCodeGenerator,
         DatabaseContext db,
         HttpContext context,
         CancellationToken cancellationToken)
@@ -50,15 +55,18 @@ public class Login : IRouteMapper
             return new RazorComponentResult<LoginForm>(new { IsCombinationInvalid = true });
         }
 
-        context.Response.Headers.Append("HX-Redirect", "/dashboard");
+        await authCodeGenerator.Generate(targetedUser, cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
+        
+        context.Response.Headers.Append("HX-Redirect", "/login/code");
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, targetedUser.Id.ToString()), 
             new Claim(ClaimTypes.Name, targetedUser.Email)
         };
-        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var claimsIdentity = new ClaimsIdentity(claims, "intermediateCookie");
         var principal = new ClaimsPrincipal(claimsIdentity);
-        await authenticationService.SignInAsync(context, CookieAuthenticationDefaults.AuthenticationScheme, principal,
+        await authenticationService.SignInAsync(context, "intermediateCookie", principal,
             null);
 
         return TypedResults.Empty;

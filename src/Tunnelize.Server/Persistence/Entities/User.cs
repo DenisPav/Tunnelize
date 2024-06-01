@@ -7,4 +7,5 @@ public class User
     public string PasswordHash { get; set; }
     
     public IEnumerable<ApiKey> ApiKeys { get; set; }
+    public IEnumerable<UserCode> Codes { get; set; }
 }
