@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.WebSockets;
+using System.Text;
 using Injectio.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Tunnelize.Server.Persistence;
@@ -72,26 +73,48 @@ public class HandleWebSocketMiddleware : IMiddleware
 
         segment = new ArraySegment<byte>(data.ToArray());
 
+        Console.WriteLine(Encoding.UTF8.GetString(segment));
+        
         await WSocket.DataChannel.Writer.WriteAsync(segment);
     }
 
     public static async Task WriteToSocket(WebSocket webSocket)
     {
         var data = new List<byte>();
-        while (true)
+        // while (true)
+        // {
+        //     var readSuccess = TcpSocket.DataChannel.Reader.TryRead(out var readData);
+        //     if (readSuccess == false)
+        //         break;
+        //
+        //     data.AddRange(readData);
+        // }
+        //
+        // var tcpData = new ArraySegment<byte>(data.ToArray());
+        // await webSocket.SendAsync(
+        //     tcpData,
+        //     WebSocketMessageType.Binary,
+        //     WebSocketMessageFlags.EndOfMessage,
+        //     CancellationToken.None);
+
+        var totalItems = TcpSocket.DataChannel.Reader.Count;
+
+        for (var i = 0; i < totalItems; i++)
         {
             var readSuccess = TcpSocket.DataChannel.Reader.TryRead(out var readData);
-            if (readSuccess == false)
-                break;
 
-            data.AddRange(readData);
+            // if (readSuccess == false)
+            //     break;
+
+            var flag = i == totalItems - 1
+                ? WebSocketMessageFlags.EndOfMessage
+                : WebSocketMessageFlags.None;
+            var tcpData = readData;
+            await webSocket.SendAsync(
+                tcpData,
+                WebSocketMessageType.Binary,
+                flag,
+                CancellationToken.None);
         }
-
-        var tcpData = new ArraySegment<byte>(data.ToArray());
-        await webSocket.SendAsync(
-            tcpData,
-            WebSocketMessageType.Binary,
-            WebSocketMessageFlags.EndOfMessage,
-            CancellationToken.None);
     }
 }

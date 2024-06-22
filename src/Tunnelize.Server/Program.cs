@@ -7,17 +7,23 @@ using Tunnelize.Server.Routes;
 using Tunnelize.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<DatabaseContext>(opts => opts.UseSqlite("Data Source=./app.db;").EnableSensitiveDataLogging());
+builder.Services.AddDbContext<DatabaseContext>(opts =>
+    opts.UseSqlite("Data Source=./app.db;").EnableSensitiveDataLogging());
 builder.Services.AddWebSockets(_ => { });
-builder.Services.AddAntiforgery(opts =>
-{
-    opts.Cookie.Name = "af";
-});
+builder.Services.AddAntiforgery(opts => { opts.Cookie.Name = "af"; });
 builder.Services.AddRazorComponents();
-builder.Services.AddAuthentication()
-    .AddCookie(opts =>
+builder.Services.AddAuthentication("loginCookie")
+    .AddCookie("intermediateCookie", opts =>
     {
         opts.Cookie.Name = "ak";
+        opts.LoginPath = "/login";
+        opts.LogoutPath = "/logout";
+        opts.ReturnUrlParameter = "ru";
+        opts.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    })
+    .AddCookie("loginCookie", opts =>
+    {
+        opts.Cookie.Name = "akc";
         opts.LoginPath = "/login";
         opts.LogoutPath = "/logout";
         opts.ReturnUrlParameter = "ru";
@@ -33,6 +39,7 @@ app.UseMiddleware<HandleWebSocketMiddleware>();
 app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapRazorComponents<App>().RequireAuthorization(opts => opts.RequireAuthenticatedUser());
+app.MapRazorComponents<App>().RequireAuthorization(opts => opts.RequireAuthenticatedUser()
+    .AddAuthenticationSchemes("loginCookie"));
 app.MapRoutes();
 app.Run();
