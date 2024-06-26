@@ -10,7 +10,7 @@ async void CreateWebSocket()
     {
         var webSocket = new ClientWebSocket();
         // webSocket.Options.SetRequestHeader("x-tunnelize-key", "73441f56-7751-440e-a26c-0543a03ca9ad");
-        webSocket.Options.SetRequestHeader("x-tunnelize-key", "2ddb329c-e17d-4b75-bc48-698c17e1e407");
+        webSocket.Options.SetRequestHeader("x-tunnelize-key", "1de76071-b172-4f05-9a4a-a1a0d2daa21b");
         webSocket.Options.RemoteCertificateValidationCallback = (_, _, _, _) => true;
         // webSocket.Options.SetBuffer(int.MaxValue, int.MaxValue);
         // var serverLocation = new Uri("wss://tunnelize.xyz");
