@@ -12,6 +12,7 @@ public class AuthCodeGenerator(
     DatabaseContext db,
     ILogger<AuthCodeGenerator> log) : IAuthCodeGenerator
 {
+    private const short AuthCodeLength = 6;
     private const string CodeAlphabet = "ABCDEFGHIJKLMNOPRSTUVZXWQ123456789";
     private static readonly int AlphabetLength = CodeAlphabet.Length;
 
@@ -36,7 +37,7 @@ public class AuthCodeGenerator(
 
     private static string GenerateAuthCode()
     {
-        var codeBytes = RandomNumberGenerator.GetBytes(6);
+        var codeBytes = RandomNumberGenerator.GetBytes(AuthCodeLength);
         var characters = codeBytes.Select(x =>
             {
                 var result = x % AlphabetLength;
