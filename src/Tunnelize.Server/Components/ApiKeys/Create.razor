@@ -3,6 +3,16 @@
 
 <div id="create-form" class="vertical" hx-target="#create-form">
     <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <button hx-get="/api/dashboard">
+                &lt; Back
+            </button>
+        </div>
+        <div class="col"></div>
+    </div>
+    
+    <div class="row">
         <div class="col">
         </div>
         <div class="col">
@@ -10,7 +20,7 @@
 
             <fieldset>
                 <legend>Fields</legend>
-                <form hx-post="/api-keys/create" hx-swap="outerHTML">
+                <form hx-post="/api/api-keys/create" hx-swap="outerHTML">
                     <AntiforgeryToken/>
 
                     <div>
@@ -24,7 +34,7 @@
                         {
                             <input type="text" name="subdomain" placeholder="***">
                         }
-                        
+
                     </div>
 
                     <br/>

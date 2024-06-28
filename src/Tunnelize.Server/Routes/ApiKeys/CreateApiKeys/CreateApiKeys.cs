@@ -11,7 +11,7 @@ public class CreateApiKeys : IRouteMapper
 {
     public void Map(IEndpointRouteBuilder builder)
     {
-        builder.MapPost("/api-keys/create", Handle).DisableAntiforgery();
+        builder.MapPost("/api/api-keys/create", Handle).DisableAntiforgery();
     }
 
     private static async Task<IResult> Handle(

@@ -8,7 +8,7 @@ public class DeleteApiKey : IRouteMapper
 {
     public void Map(IEndpointRouteBuilder builder)
     {
-        builder.MapDelete("/api-keys/delete/{id:guid}", async (
+        builder.MapDelete("/api/api-keys/delete/{id:guid}", async (
             Guid id, 
             DatabaseContext db,
             CancellationToken cancellationToken) =>

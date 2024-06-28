@@ -10,7 +10,7 @@ public class ListApiKeys : IRouteMapper
 {
     public void Map(IEndpointRouteBuilder builder)
     {
-        builder.MapGet("/api-keys/list", Handle);
+        builder.MapGet("/api/api-keys", Handle);
     }
 
     private async Task<RazorComponentResult<DashboardApiKeyList>> Handle(

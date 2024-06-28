@@ -32,6 +32,12 @@ public class EmailSender(ILogger<EmailSender> log) : IEmailSender
 
         log.LogDebug("Sending email!");
         var response = await client.SendTransactionalEmailAsync(email);
-        log.LogDebug("Email sent!");
+        var hasErrors = response.Messages is null
+                        || response.Messages.Any(x => x.Errors.Count != 0);
+        if (hasErrors)
+        {
+            log.LogWarning("Failed sending email: [{reason}]",
+                response.Messages?[0].Errors?[0].ErrorMessage ?? "invalid credentials");
+        }
     }
 }

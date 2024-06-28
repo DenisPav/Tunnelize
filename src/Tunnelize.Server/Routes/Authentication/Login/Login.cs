@@ -20,7 +20,7 @@ public class Login : IRouteMapper
 {
     public void Map(IEndpointRouteBuilder builder)
     {
-        builder.MapPost("/authentication/login", Handle);
+        builder.MapPost("/api/authentication/login", Handle);
     }
 
     private static async Task<IResult> Handle(

@@ -8,7 +8,7 @@ public class Logout : IRouteMapper
 {
     public void Map(IEndpointRouteBuilder builder)
     {
-        builder.MapPost("/authentication/logout", Handle);
+        builder.MapPost("/api/authentication/logout", Handle);
     }
 
     private static async Task<EmptyHttpResult> Handle(

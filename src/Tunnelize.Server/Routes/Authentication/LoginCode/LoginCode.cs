@@ -16,7 +16,7 @@ public class LoginCode : IRouteMapper
 {
     public void Map(IEndpointRouteBuilder builder)
     {
-        builder.MapPost("/authentication/login/code", Handle);
+        builder.MapPost("/api/authentication/login/code", Handle);
     }
 
     async Task Handle(

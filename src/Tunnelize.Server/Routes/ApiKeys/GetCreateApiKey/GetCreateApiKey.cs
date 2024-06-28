@@ -6,7 +6,7 @@ public class GetCreateApiKeys : IRouteMapper
 {
     public void Map(IEndpointRouteBuilder builder)
     {
-        builder.MapGet("/api-keys/create", Handle);
+        builder.MapGet("/api/api-keys/create", Handle);
     }
 
     private static EmptyHttpResult Handle(HttpContext context)

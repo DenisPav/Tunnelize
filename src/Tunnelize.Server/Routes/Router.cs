@@ -5,6 +5,7 @@ using Tunnelize.Server.Routes.ApiKeys.ListApiKeys;
 using Tunnelize.Server.Routes.Authentication.Login;
 using Tunnelize.Server.Routes.Authentication.LoginCode;
 using Tunnelize.Server.Routes.Authentication.Logout;
+using Tunnelize.Server.Routes.Dashboard.GetDashboard;
 
 namespace Tunnelize.Server.Routes;
 
@@ -20,5 +21,7 @@ public static class RouterExtensions
         builder.MapRoute<GetCreateApiKeys>();
         builder.MapRoute<ListApiKeys>();
         builder.MapRoute<DeleteApiKey>();
+        
+        builder.MapRoute<GetDashboard>();
     }
 }

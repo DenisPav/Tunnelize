@@ -12,17 +12,17 @@
                 <div class="col"></div>
                 <div class="col">
                     <div class="pull-right">
-                        <button hx-get="/api-keys/create">Create</button>
+                        <button hx-get="/api/api-keys/create">Create</button>
                     </div>
                 </div>
             </div>
             <hr>
-            
+
             <div class="row">
-                <div class="col" hx-get="/api-keys/list" hx-swap="innerHTML" hx-trigger="load">
+                <div class="col" hx-get="/api/api-keys" hx-swap="innerHTML" hx-trigger="load">
                 </div>
             </div>
-            <button hx-post="/authentication/logout">Logout</button>
+            <button hx-post="/api/authentication/logout">Logout</button>
         </div>
         <div class="col"></div>
     </div>
