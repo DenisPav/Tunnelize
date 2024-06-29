@@ -11,7 +11,8 @@ namespace Tunnelize.Server.Services;
 [RegisterScoped]
 public class HandleWebSocketMiddleware : IMiddleware
 {
-    public static IDictionary<string, WebSocket> WebSocketMap = new ConcurrentDictionary<string, WebSocket>();
+    private const string TunnelizeHeaderKey = "x-tunnelize-key";
+    public static readonly IDictionary<string, WebSocket> WebSocketMap = new ConcurrentDictionary<string, WebSocket>();
 
     public async Task InvokeAsync(
         HttpContext context,
@@ -22,8 +23,8 @@ public class HandleWebSocketMiddleware : IMiddleware
             await next(context);
             return;
         }
-
-        context.Request.Headers.TryGetValue("x-tunnelize-key", out var apiKeyHeader);
+        
+        context.Request.Headers.TryGetValue(TunnelizeHeaderKey, out var apiKeyHeader);
         var apiKeyStringValue = apiKeyHeader.FirstOrDefault();
         if (Guid.TryParse(apiKeyStringValue, out var parsedApiKey) == false)
         {
@@ -32,7 +33,8 @@ public class HandleWebSocketMiddleware : IMiddleware
         }
 
         var databaseContext = context.RequestServices.GetRequiredService<DatabaseContext>();
-        var apiKey = await databaseContext.Set<ApiKey>().SingleOrDefaultAsync(x => x.Id == parsedApiKey, context.RequestAborted);
+        var apiKey = await databaseContext.Set<ApiKey>()
+            .SingleOrDefaultAsync(x => x.Id == parsedApiKey, context.RequestAborted);
         if (apiKey is null)
         {
             await next(context);
@@ -44,10 +46,10 @@ public class HandleWebSocketMiddleware : IMiddleware
             await next(context);
             return;
         }
-        
+
         var webSocket = await context.WebSockets.AcceptWebSocketAsync();
         WebSocketMap.Add(apiKey.SubDomain, webSocket);
-        
+
         while (webSocket.State == WebSocketState.Open)
         {
             await Task.Delay(20000);
@@ -72,44 +74,20 @@ public class HandleWebSocketMiddleware : IMiddleware
         } while (result.EndOfMessage == false);
 
         segment = new ArraySegment<byte>(data.ToArray());
-
-        Console.WriteLine(Encoding.UTF8.GetString(segment));
-        
         await WSocket.DataChannel.Writer.WriteAsync(segment);
     }
 
     public static async Task WriteToSocket(WebSocket webSocket)
     {
-        var data = new List<byte>();
-        // while (true)
-        // {
-        //     var readSuccess = TcpSocket.DataChannel.Reader.TryRead(out var readData);
-        //     if (readSuccess == false)
-        //         break;
-        //
-        //     data.AddRange(readData);
-        // }
-        //
-        // var tcpData = new ArraySegment<byte>(data.ToArray());
-        // await webSocket.SendAsync(
-        //     tcpData,
-        //     WebSocketMessageType.Binary,
-        //     WebSocketMessageFlags.EndOfMessage,
-        //     CancellationToken.None);
-
         var totalItems = TcpSocket.DataChannel.Reader.Count;
 
         for (var i = 0; i < totalItems; i++)
         {
-            var readSuccess = TcpSocket.DataChannel.Reader.TryRead(out var readData);
-
-            // if (readSuccess == false)
-            //     break;
-
+            TcpSocket.DataChannel.Reader.TryRead(out var tcpData);
             var flag = i == totalItems - 1
                 ? WebSocketMessageFlags.EndOfMessage
                 : WebSocketMessageFlags.None;
-            var tcpData = readData;
+            
             await webSocket.SendAsync(
                 tcpData,
                 WebSocketMessageType.Binary,

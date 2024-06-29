@@ -4,5 +4,5 @@ namespace Tunnelize.Server.Services;
 
 public static class WSocket
 {
-    public static Channel<ArraySegment<byte>> DataChannel = Channel.CreateUnbounded<ArraySegment<byte>>();
+    public static readonly Channel<ArraySegment<byte>> DataChannel = Channel.CreateUnbounded<ArraySegment<byte>>();
 }

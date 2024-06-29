@@ -12,7 +12,7 @@ public static class TcpServer
         _listener = new TcpListener(IPAddress.Loopback, 8080);
         _listener.Start();
 
-        while (true)
+        while (cancellationToken.IsCancellationRequested == false)
         {
             try
             {
@@ -30,10 +30,9 @@ public static class TcpServer
                 await TcpSocket.WriteToTcpSocket(socket);
                 socket.Close();
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e);
-                // throw;
+                // ignored
             }
         }
     }
