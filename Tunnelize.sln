@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tunnelize.Client", "src\Tun
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tunnelize.Server", "src\Tunnelize.Server\Tunnelize.Server.csproj", "{8FD04D02-101F-4BC4-856C-976E0089ABD2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tunnelize.Shared", "src\Tunnelize.Shared\Tunnelize.Shared.csproj", "{405245DD-FE2D-4551-AA79-3DACF0FBF5CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +28,14 @@ Global
 		{8FD04D02-101F-4BC4-856C-976E0089ABD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FD04D02-101F-4BC4-856C-976E0089ABD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FD04D02-101F-4BC4-856C-976E0089ABD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{405245DD-FE2D-4551-AA79-3DACF0FBF5CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{405245DD-FE2D-4551-AA79-3DACF0FBF5CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{405245DD-FE2D-4551-AA79-3DACF0FBF5CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{405245DD-FE2D-4551-AA79-3DACF0FBF5CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5233FA18-9100-49E1-99B8-809A18A91448} = {9466044C-1501-49D7-B666-14128C4CCC1C}
 		{8FD04D02-101F-4BC4-856C-976E0089ABD2} = {9466044C-1501-49D7-B666-14128C4CCC1C}
+		{405245DD-FE2D-4551-AA79-3DACF0FBF5CA} = {9466044C-1501-49D7-B666-14128C4CCC1C}
 	EndGlobalSection
 EndGlobal

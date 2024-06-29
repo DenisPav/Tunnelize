@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Tunnelize.Shared.Routes;
 
 namespace Tunnelize.Server.Routes.ApiKeys.GetCreateApiKey;
 

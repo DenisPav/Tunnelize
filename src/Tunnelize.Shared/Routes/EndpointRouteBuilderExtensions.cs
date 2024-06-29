@@ -1,4 +1,6 @@
-﻿namespace Tunnelize.Server.Routes;
+﻿using Microsoft.AspNetCore.Routing;
+
+namespace Tunnelize.Shared.Routes;
 
 public static class EndpointRouteBuilderExtensions
 {

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Tunnelize.Server.Components.ApiKeys;
 using Tunnelize.Server.Persistence;
 using Tunnelize.Server.Persistence.Entities;
+using Tunnelize.Shared.Routes;
 
 namespace Tunnelize.Server.Routes.ApiKeys.CreateApiKeys;
 

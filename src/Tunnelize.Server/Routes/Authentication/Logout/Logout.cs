@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Tunnelize.Shared.Routes;
 
 namespace Tunnelize.Server.Routes.Authentication.Logout;
 

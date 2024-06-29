@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Tunnelize.Server.Components.Dashboards;
 using Tunnelize.Server.Persistence;
 using Tunnelize.Server.Persistence.Entities;
+using Tunnelize.Shared.Routes;
 
 namespace Tunnelize.Server.Routes.ApiKeys.ListApiKeys;
 

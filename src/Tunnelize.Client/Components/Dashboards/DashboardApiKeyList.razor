@@ -1,0 +1,40 @@
+﻿@code {
+
+    private object[] ApiKeys = [1];
+
+}
+
+
+<table hx-target="closest tr">
+    <tr>
+        <th>ID</th>
+        <th>Description</th>
+        <th class="pull-right">Actions</th>
+    </tr>
+    @foreach (var apiKey in ApiKeys)
+    {
+        <tr>
+            @* <td>@apiKey.Id</td> *@
+            @* <td> *@
+            @*     @apiKey.SubDomain *@
+            @* </td> *@
+            @* <td class="pull-right"> *@
+            @*     <button hx-delete="/api/api-keys/delete/@apiKey.Id" hx-swap="outerHTML">Delete</button> *@
+            @* </td> *@
+
+
+            <td>1de76071-b172-4f05-9a4a-a1a0d2daa21b</td>
+            <td>
+                abcd subdomain
+            </td>
+            <td class="pull-right">
+                @* <button hx-delete="/api/api-keys/delete/@apiKey.Id" hx-swap="outerHTML">Delete</button> *@
+                <button hx-swap="outerHTML">Delete</button>
+            </td>
+        </tr>
+    }
+</table>
+
+@code {
+    // [Parameter] public IEnumerable<ApiKeyResponse> ApiKeys { get; set; }
+}

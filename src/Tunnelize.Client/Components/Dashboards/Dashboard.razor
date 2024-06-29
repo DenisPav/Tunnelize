@@ -1,0 +1,51 @@
+﻿@page "/"
+@using Tunnelize.Client.Sockets
+
+<div class="vertical" hx-target=".vertical">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            @if (IsConnected)
+            {
+                <button hx-swap="outerHTML" class="button error" >Disconnect</button>    
+            }
+            else
+            {
+                <button hx-post="/api/sockets/connect" hx-swap="outerHTML">Connect</button>    
+            }
+            
+        </div>
+        <div class="col"></div>
+    </div>
+    
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <div>
+                <h2>Dashboard</h2>
+            </div>
+            <div class="row">
+                <div class="col">API keys</div>
+                <div class="col"></div>
+                <div class="col">
+                    <div class="pull-right">
+                        <button hx-get="/api/api-keys/create">Add</button>
+                    </div>
+                </div>
+            </div>
+            <hr>
+
+            <div class="row">
+                @* <div class="col" hx-get="/api/api-keys" hx-swap="innerHTML" hx-trigger="load"> *@
+                @* </div> *@
+
+                <DashboardApiKeyList/>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public bool IsConnected { get; set; } = WebSocketHandler.IsConnected;
+}

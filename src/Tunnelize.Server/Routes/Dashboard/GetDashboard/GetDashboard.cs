@@ -1,4 +1,6 @@
-﻿namespace Tunnelize.Server.Routes.Dashboard.GetDashboard;
+﻿using Tunnelize.Shared.Routes;
+
+namespace Tunnelize.Server.Routes.Dashboard.GetDashboard;
 
 public class GetDashboard : IRouteMapper
 {

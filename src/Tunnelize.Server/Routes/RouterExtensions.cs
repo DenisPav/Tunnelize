@@ -6,6 +6,7 @@ using Tunnelize.Server.Routes.Authentication.Login;
 using Tunnelize.Server.Routes.Authentication.LoginCode;
 using Tunnelize.Server.Routes.Authentication.Logout;
 using Tunnelize.Server.Routes.Dashboard.GetDashboard;
+using Tunnelize.Shared.Routes;
 
 namespace Tunnelize.Server.Routes;
 

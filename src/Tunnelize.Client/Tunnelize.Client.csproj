@@ -6,4 +6,23 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="Components\App.razor" />
+    <AdditionalFiles Include="Components\Layouts\MainLayout.razor" />
+    <AdditionalFiles Include="Components\Routes.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\ApiKeys\Create.razor" />
+    <_ContentIncludedByDefault Remove="Components\Authentication\Login.razor" />
+    <_ContentIncludedByDefault Remove="Components\Authentication\LoginCode.razor" />
+    <_ContentIncludedByDefault Remove="Components\Authentication\LoginForm.razor" />
+    <_ContentIncludedByDefault Remove="Components\Dashboards\Dashboard.razor" />
+    <_ContentIncludedByDefault Remove="Components\Dashboards\DashboardApiKeyList.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tunnelize.Shared\Tunnelize.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

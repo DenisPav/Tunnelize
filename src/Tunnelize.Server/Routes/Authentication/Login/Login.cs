@@ -13,6 +13,7 @@ using Tunnelize.Server.Authentication;
 using Tunnelize.Server.Components.Authentication;
 using Tunnelize.Server.Persistence;
 using Tunnelize.Server.Persistence.Entities;
+using Tunnelize.Shared.Routes;
 
 namespace Tunnelize.Server.Routes.Authentication.Login;
 
