@@ -53,11 +53,11 @@ public static class WebSocketHandler
     
     static async Task WriteToSocket(WebSocket webSocket)
     {
-        var totalItems = TcpSocket.DataChannel.Reader.Count;
+        var totalItems = TcpSocketHandler.DataChannel.Reader.Count;
     
         for (var i = 0; i < totalItems; i++)
         {
-            TcpSocket.DataChannel.Reader.TryRead(out var tcpData);
+            TcpSocketHandler.DataChannel.Reader.TryRead(out var tcpData);
             var flag = i == totalItems - 1
                 ? WebSocketMessageFlags.EndOfMessage
                 : WebSocketMessageFlags.None;
