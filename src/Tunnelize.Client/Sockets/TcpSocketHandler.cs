@@ -7,8 +7,6 @@ public class TcpSocketHandler
 {
     public static async Task CreateTcpSocket()
     {
-        // ServicePointManager.SetTcpKeepAlive(true, 1000, 1000);
-
         try
         {
             var tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
