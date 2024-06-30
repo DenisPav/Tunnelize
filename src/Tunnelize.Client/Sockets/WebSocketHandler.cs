@@ -1,27 +1,31 @@
 ﻿using System.Net.WebSockets;
+using System.Threading.Channels;
 
 namespace Tunnelize.Client.Sockets;
 
 public static class WebSocketHandler
 {
+    public static readonly Channel<ArraySegment<byte>> DataChannel = Channel.CreateUnbounded<ArraySegment<byte>>();
     public static bool IsConnected;
     
+    private static ClientWebSocket? WebSocket;
+
     public static async void CreateWebSocket()
     {
         try
         {
-            var webSocket = new ClientWebSocket();
-            webSocket.Options.SetRequestHeader("x-tunnelize-key", "1de76071-b172-4f05-9a4a-a1a0d2daa21b");
-            webSocket.Options.RemoteCertificateValidationCallback = (_, _, _, _) => true;
+            WebSocket = new ClientWebSocket();
+            WebSocket.Options.SetRequestHeader("x-tunnelize-key", "1de76071-b172-4f05-9a4a-a1a0d2daa21b");
+            WebSocket.Options.RemoteCertificateValidationCallback = (_, _, _, _) => true;
             var serverLocation = new Uri("ws://localhost:5000");
-            await webSocket.ConnectAsync(serverLocation, CancellationToken.None);
+            await WebSocket.ConnectAsync(serverLocation, CancellationToken.None);
 
             IsConnected = true;
 
-            while (webSocket.State == WebSocketState.Open)
+            while (WebSocket.State == WebSocketState.Open)
             {
-                await ReadFromSocket(webSocket);
-                await WriteToSocket(webSocket);
+                await ReadFromSocket(WebSocket);
+                await WriteToSocket(WebSocket);
             }
         }
         catch (Exception e)
@@ -33,7 +37,17 @@ public static class WebSocketHandler
             IsConnected = false;
         }
     }
-    
+
+    public static async Task CloseSocket(CancellationToken cancellationToken)
+    {
+        if (WebSocket is not { } socket)
+        {
+            return;
+        }
+
+        socket.Abort();
+    }
+
     static async Task ReadFromSocket(WebSocket webSocket)
     {
         WebSocketReceiveResult result;
@@ -44,24 +58,24 @@ public static class WebSocketHandler
             result = await webSocket.ReceiveAsync(segment, CancellationToken.None);
             if (result.Count != buffer.Length)
                 segment = segment[..result.Count];
-    
-            await WSocket.DataChannel.Writer.WriteAsync(segment);
+
+            await DataChannel.Writer.WriteAsync(segment);
         } while (result.EndOfMessage == false);
-        
+
         await TcpSocketHandler.CreateTcpSocket();
     }
-    
+
     static async Task WriteToSocket(WebSocket webSocket)
     {
         var totalItems = TcpSocketHandler.DataChannel.Reader.Count;
-    
+
         for (var i = 0; i < totalItems; i++)
         {
             TcpSocketHandler.DataChannel.Reader.TryRead(out var tcpData);
             var flag = i == totalItems - 1
                 ? WebSocketMessageFlags.EndOfMessage
                 : WebSocketMessageFlags.None;
-    
+
             await webSocket.SendAsync(
                 tcpData,
                 WebSocketMessageType.Binary,

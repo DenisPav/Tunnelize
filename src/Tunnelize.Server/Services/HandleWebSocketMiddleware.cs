@@ -41,10 +41,10 @@ public class HandleWebSocketMiddleware : IMiddleware
             return;
         }
 
-        if (WebSocketMap.ContainsKey(apiKey.SubDomain))
+        if (WebSocketMap.TryGetValue(apiKey.SubDomain, out var activeWebSocket))
         {
-            await next(context);
-            return;
+            activeWebSocket.Abort();
+            WebSocketMap.Remove(apiKey.SubDomain);
         }
 
         var webSocket = await context.WebSockets.AcceptWebSocketAsync();
@@ -52,10 +52,8 @@ public class HandleWebSocketMiddleware : IMiddleware
 
         while (webSocket.State == WebSocketState.Open)
         {
-            await Task.Delay(20000);
+            await Task.Delay(5000);
         }
-
-        WebSocketMap.Remove(apiKey.SubDomain);
     }
 
     public static async Task ReadFromSocket(WebSocket webSocket)

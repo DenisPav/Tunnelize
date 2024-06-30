@@ -40,12 +40,12 @@ public class TcpSocketHandler
 
     public static async Task WriteToTcpSocket(Socket socket)
     {
-        await WSocket.DataChannel.Reader.WaitToReadAsync();
-        var totalItems = WSocket.DataChannel.Reader.Count;
+        await WebSocketHandler.DataChannel.Reader.WaitToReadAsync();
+        var totalItems = WebSocketHandler.DataChannel.Reader.Count;
 
         for (var i = 0; i < totalItems; i++)
         {
-            WSocket.DataChannel.Reader.TryRead(out var tcpData);
+            WebSocketHandler.DataChannel.Reader.TryRead(out var tcpData);
             await socket.SendAsync(tcpData);
         }
     }

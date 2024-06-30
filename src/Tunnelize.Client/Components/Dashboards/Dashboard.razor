@@ -7,7 +7,7 @@
         <div class="col">
             @if (IsConnected)
             {
-                <button hx-swap="outerHTML" class="button error" >Disconnect</button>    
+                <button hx-post="/api/sockets/disconnect" hx-swap="outerHTML" class="button error" >Disconnect</button>    
             }
             else
             {
