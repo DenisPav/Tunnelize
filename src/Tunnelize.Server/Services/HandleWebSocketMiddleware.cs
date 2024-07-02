@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.WebSockets;
-using System.Text;
 using Injectio.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Tunnelize.Server.Persistence;

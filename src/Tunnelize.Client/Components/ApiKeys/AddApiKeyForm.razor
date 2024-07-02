@@ -1,0 +1,60 @@
+﻿@page "/add"
+@using Microsoft.AspNetCore.Components.Forms
+
+<div id="create-form" class="vertical" hx-target="#create-form">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <button hx-get="/api/dashboards">
+                &lt; Back
+            </button>
+        </div>
+        <div class="col"></div>
+    </div>
+    
+    <div class="row">
+        <div class="col">
+        </div>
+        <div class="col">
+            <h2>Add API key</h2>
+
+            <fieldset>
+                <legend>Fields</legend>
+                <form hx-post="/api/api-keys/create" hx-swap="outerHTML">
+                    <AntiforgeryToken/>
+
+                    <div>
+                        <label>Api Key</label>
+                        @if (HasErrors)
+                        {
+                            <input class="error" type="text" name="api-key" placeholder="***">
+                            <span>Can't be empty or already added!</span>
+                        }
+                        else
+                        {
+                            <input type="text" name="api-key" placeholder="***">
+                        }
+
+                    </div>
+
+                    <br/>
+
+                    <div>
+                        <button type="submit">
+                            Add
+                        </button>
+                    </div>
+
+                    <br/>
+
+                </form>
+            </fieldset>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public bool HasErrors { get; set; }
+}
