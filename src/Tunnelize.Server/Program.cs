@@ -8,7 +8,7 @@ using Tunnelize.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DatabaseContext>(opts =>
-    opts.UseSqlite("Data Source=./app.db;").EnableSensitiveDataLogging());
+    opts.UseSqlite("Data Source=./app.db;").EnableSensitiveDataLogging(builder.Environment.IsDevelopment()));
 builder.Services.AddWebSockets(_ => { });
 builder.Services.AddAntiforgery(opts => { opts.Cookie.Name = "af"; });
 builder.Services.AddRazorComponents();
