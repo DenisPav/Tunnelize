@@ -9,6 +9,7 @@ builder.Services.AddDbContext<DatabaseContext>(opts =>
     opts.UseSqlite("Data Source=./app.db;").EnableSensitiveDataLogging(builder.Environment.IsDevelopment()));
 builder.Services.AddRazorComponents();
 builder.Services.AddHostedService<StartupClientHostedService>();
+builder.Services.AddTunnelizeClient();
 
 var app = builder.Build();
 app.UseAntiforgery();
