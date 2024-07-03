@@ -1,14 +1,32 @@
 ﻿using FluentValidation;
 using Injectio.Attributes;
+using Microsoft.EntityFrameworkCore;
+using Tunnelize.Client.Persistence;
+using Tunnelize.Client.Persistence.Entities;
 
 namespace Tunnelize.Client.Routes.ApiKeys.AddApiKey;
 
-[RegisterSingleton]
+[RegisterScoped]
 public class AddApiKeyRequestValidator : AbstractValidator<AddApiKeyRequest>
 {
-    public AddApiKeyRequestValidator()
+    private readonly DatabaseContext _db;
+
+    public AddApiKeyRequestValidator(DatabaseContext db)
     {
+        _db = db;
+        
         RuleFor(x => x.ApiKey)
-            .NotEmpty();
+            .NotEmpty()
+            .MustAsync(IsNotAlreadyAdded);
+    }
+
+    private async Task<bool> IsNotAlreadyAdded(
+        Guid key, 
+        CancellationToken cancellationToken)
+    {
+        var apiKeyAlreadyUsed = await _db.Set<ApiKey>()
+            .AnyAsync(x => x.Value == key, cancellationToken);
+
+        return apiKeyAlreadyUsed == false;
     }
 }
