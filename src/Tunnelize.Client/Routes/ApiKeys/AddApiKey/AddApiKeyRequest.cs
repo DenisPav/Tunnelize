@@ -1,3 +1,8 @@
 ﻿namespace Tunnelize.Client.Routes.ApiKeys.AddApiKey;
 
-public record AddApiKeyRequest(Guid Value, string Description = "");
+public class AddApiKeyRequest
+{
+    public Guid Value { get; init; }
+    public string Description { get; init; }
+    public string IsActive { get; init; }
+}

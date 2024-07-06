@@ -7,5 +7,7 @@ namespace Tunnelize.Client.Routes.ApiKeys;
 [Mapper]
 public partial class ApiKeyMapper
 {
+    [MapperIgnoreSource(nameof(AddApiKeyRequest.IsActive))]
     public partial ApiKey MapFromRequest(AddApiKeyRequest request);
+    public partial ApiKeyResponse MapToResponse(ApiKey apiKey);
 }

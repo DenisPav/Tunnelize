@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Tunnelize.Client.Components.ApiKeys;
 using Tunnelize.Client.Persistence;
 using Tunnelize.Client.Persistence.Entities;
@@ -27,11 +28,15 @@ public class AddApiKey : IRouteMapper
         {
             return new RazorComponentResult<AddApiKeyForm>(new { HasErrors = true });
         }
-        
+
         var apiKey = new ApiKeyMapper().MapFromRequest(request);
+        apiKey.IsActive = request.IsActive == "on";
+
+        await db.Set<ApiKey>()
+            .ExecuteUpdateAsync(x => x.SetProperty(p => p.IsActive, !apiKey.IsActive), cancellationToken);
         await db.Set<ApiKey>().AddAsync(apiKey, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
-        
+
         context.Response.Headers.Append("HX-Redirect", "/");
         return Results.Empty;
     }
