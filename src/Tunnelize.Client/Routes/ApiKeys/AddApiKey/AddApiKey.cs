@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Tunnelize.Client.Components.ApiKeys;
+using Tunnelize.Client.Persistence;
+using Tunnelize.Client.Persistence.Entities;
 using Tunnelize.Shared.Routes;
 
 namespace Tunnelize.Client.Routes.ApiKeys.AddApiKey;
@@ -14,8 +16,10 @@ public class AddApiKey : IRouteMapper
     }
 
     private static async Task<IResult> Handle(
+        HttpContext context,
         [FromForm] AddApiKeyRequest request,
         [FromServices] IValidator<AddApiKeyRequest> validator,
+        DatabaseContext db,
         CancellationToken cancellationToken)
     {
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -23,8 +27,12 @@ public class AddApiKey : IRouteMapper
         {
             return new RazorComponentResult<AddApiKeyForm>(new { HasErrors = true });
         }
-
-        //todo save and return back to dashboard for api keys
+        
+        var apiKey = new ApiKeyMapper().MapFromRequest(request);
+        await db.Set<ApiKey>().AddAsync(apiKey, cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
+        
+        context.Response.Headers.Append("HX-Redirect", "/");
         return Results.Empty;
     }
 }

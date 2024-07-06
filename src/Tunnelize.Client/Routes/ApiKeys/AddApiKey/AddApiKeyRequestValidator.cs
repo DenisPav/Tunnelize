@@ -15,7 +15,7 @@ public class AddApiKeyRequestValidator : AbstractValidator<AddApiKeyRequest>
     {
         _db = db;
         
-        RuleFor(x => x.ApiKey)
+        RuleFor(x => x.Value)
             .NotEmpty()
             .MustAsync(IsNotAlreadyAdded);
     }

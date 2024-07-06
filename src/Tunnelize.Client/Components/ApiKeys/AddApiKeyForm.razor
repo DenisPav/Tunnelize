@@ -27,14 +27,19 @@
                         <label>Api Key</label>
                         @if (HasErrors)
                         {
-                            <input class="error" type="text" name="apiKey" placeholder="***">
+                            <input class="error" type="text" name="value" placeholder="***">
                             <span>Can't be empty or already added!</span>
                         }
                         else
                         {
-                            <input type="text" name="apiKey" placeholder="***">
+                            <input type="text" name="value" placeholder="***">
                         }
 
+                    </div>
+
+                    <div>
+                        <label>Description</label>
+                        <input type="text" name="description" placeholder="***">
                     </div>
 
                     <br/>
