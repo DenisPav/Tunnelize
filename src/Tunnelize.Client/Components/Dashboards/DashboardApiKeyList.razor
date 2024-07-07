@@ -2,7 +2,7 @@
 
 <table hx-target="closest tr">
     <tr>
-        <th>ID</th>
+        <th>Value</th>
         <th>Description</th>
         <th>Is Active</th>
         <th class="pull-right">Actions</th>
@@ -10,7 +10,7 @@
     @foreach (var apiKey in ApiKeys)
     {
         <tr>
-            <td>@apiKey.Id</td>
+            <td>@apiKey.Value</td>
             <td>
                 @apiKey.Description
             </td>
@@ -18,7 +18,7 @@
                 @apiKey.IsActive
             </td>
             <td class="pull-right">
-                <button hx-delete="/api/api-keys/delete/@apiKey.Id" hx-swap="outerHTML">Delete</button>
+                <button hx-delete="/api/api-keys/@apiKey.Id" hx-swap="outerHTML">Delete</button>
             </td>
         </tr>
     }

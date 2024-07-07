@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using Tunnelize.Client.Components.Dashboards;
+using Tunnelize.Client.Persistence;
+using Tunnelize.Client.Persistence.Entities;
 using Tunnelize.Client.Sockets;
 using Tunnelize.Shared.Routes;
 
@@ -12,10 +15,15 @@ public class ConnectSocket : IRouteMapper
         builder.MapPost("/api/sockets/connect", Handle);
     }
 
-    private IResult Handle()
+    private async Task<IResult> Handle(
+        DatabaseContext db,
+        CancellationToken cancellationToken)
     {
-        WebSocketHandler.CreateWebSocket();
-
+        var activeApiKey = await db.Set<ApiKey>()
+            .Where(x => x.IsActive)
+            .FirstOrDefaultAsync(cancellationToken);
+        
+        WebSocketHandler.CreateWebSocket(activeApiKey!.Value);
         return new RazorComponentResult<Dashboard>(new { IsConnected = true });
     }
 }

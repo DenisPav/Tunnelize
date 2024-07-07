@@ -1,4 +1,5 @@
 ﻿using Tunnelize.Client.Routes.ApiKeys.AddApiKey;
+using Tunnelize.Client.Routes.ApiKeys.DeleteApiKey;
 using Tunnelize.Client.Routes.ApiKeys.GetApiKeyForm;
 using Tunnelize.Client.Routes.ApiKeys.ListApiKeys;
 using Tunnelize.Client.Routes.Dashboards.GetDashboard;
@@ -18,6 +19,7 @@ public static class RouterExtensions
         builder.MapRoute<GetApiKeyForm>();
         builder.MapRoute<AddApiKey>();
         builder.MapRoute<ListApiKeys>();
+        builder.MapRoute<DeleteApiKey>();
         
         builder.MapRoute<GetDashboard>();
     }

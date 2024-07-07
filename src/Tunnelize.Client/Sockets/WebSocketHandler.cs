@@ -10,12 +10,12 @@ public static class WebSocketHandler
     
     private static ClientWebSocket? WebSocket;
 
-    public static async void CreateWebSocket()
+    public static async void CreateWebSocket(Guid apiKey)
     {
         try
         {
             WebSocket = new ClientWebSocket();
-            WebSocket.Options.SetRequestHeader("x-tunnelize-key", "1de76071-b172-4f05-9a4a-a1a0d2daa21b");
+            WebSocket.Options.SetRequestHeader("x-tunnelize-key", apiKey.ToString());
             WebSocket.Options.RemoteCertificateValidationCallback = (_, _, _, _) => true;
             var serverLocation = new Uri("ws://localhost:5000");
             await WebSocket.ConnectAsync(serverLocation, CancellationToken.None);
@@ -38,7 +38,7 @@ public static class WebSocketHandler
         }
     }
 
-    public static async Task CloseSocket(CancellationToken cancellationToken)
+    public static void CloseSocket()
     {
         if (WebSocket is not { } socket)
         {

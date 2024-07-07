@@ -12,9 +12,9 @@ public class DisconnectSocket : IRouteMapper
         builder.MapPost("/api/sockets/disconnect", Handle);
     }
 
-    private async Task<IResult> Handle(CancellationToken cancellationToken)
+    private static IResult Handle()
     {
-        await WebSocketHandler.CloseSocket(cancellationToken);
+        WebSocketHandler.CloseSocket();
 
         return new RazorComponentResult<Dashboard>(new { IsConnected = false });
     }
