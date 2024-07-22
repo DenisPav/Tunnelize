@@ -5,6 +5,7 @@ namespace Tunnelize.Client.Sockets;
 
 public class TcpSocketHandler
 {
+    public static int? Port { get; set; }
     public static readonly Channel<ArraySegment<byte>> DataChannel = Channel.CreateUnbounded<ArraySegment<byte>>();
 
     public static async Task ReadFromTcpSocket(Socket socket)
@@ -55,7 +56,7 @@ public class TcpSocketHandler
         try
         {
             var tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
-            await tcpSocket.ConnectAsync("127.0.0.1", 3000);
+            await tcpSocket.ConnectAsync("127.0.0.1", Port.GetValueOrDefault());
             await WriteToTcpSocket(tcpSocket);
             await ReadFromTcpSocket(tcpSocket);
 

@@ -15,6 +15,7 @@ public class DisconnectSocket : IRouteMapper
     private static IResult Handle()
     {
         WebSocketHandler.CloseSocket();
+        TcpSocketHandler.Port = null;
 
         return new RazorComponentResult<Dashboard>(new { IsConnected = false });
     }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tunnelize.Client.Components.Dashboards;
 using Tunnelize.Client.Persistence;
@@ -16,13 +18,22 @@ public class ConnectSocket : IRouteMapper
     }
 
     private async Task<IResult> Handle(
+        [FromForm] ConnectSocketRequest request,
         DatabaseContext db,
+        IValidator<ConnectSocketRequest> validator,
         CancellationToken cancellationToken)
     {
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        if (validationResult.IsValid == false)
+        {
+            return new RazorComponentResult<Dashboard>(new { HasErrors = true });
+        }
+        
         var activeApiKey = await db.Set<ApiKey>()
             .Where(x => x.IsActive)
             .FirstOrDefaultAsync(cancellationToken);
-        
+
+        TcpSocketHandler.Port = request.Port;
         WebSocketHandler.CreateWebSocket(activeApiKey!.Value);
         return new RazorComponentResult<Dashboard>(new { IsConnected = true });
     }
