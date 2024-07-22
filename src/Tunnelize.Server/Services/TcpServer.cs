@@ -23,16 +23,20 @@ public static class TcpServer
                 var wildCardDomain = hostName[..dotIndex];
 
                 HandleWebSocketMiddleware.WebSocketMap.TryGetValue(wildCardDomain, out var webSocket);
-                
-                await HandleWebSocketMiddleware.WriteToSocket(webSocket);
-                await HandleWebSocketMiddleware.ReadFromSocket(webSocket);
 
-                await TcpSocket.WriteToTcpSocket(socket);
+                if (webSocket is not null)
+                {
+                    await HandleWebSocketMiddleware.WriteToSocket(webSocket);
+                    await HandleWebSocketMiddleware.ReadFromSocket(webSocket);
+
+                    await TcpSocket.WriteToTcpSocket(socket);    
+                }
+                
                 socket.Close();
             }
             catch
             {
-                // ignored
+                //TODO: log
             }
         }
     }

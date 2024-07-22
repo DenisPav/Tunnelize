@@ -42,7 +42,15 @@ public class HandleWebSocketMiddleware : IMiddleware
 
         if (WebSocketMap.TryGetValue(apiKey.SubDomain, out var activeWebSocket))
         {
-            activeWebSocket.Abort();
+            try
+            {
+                activeWebSocket.Abort();
+            }
+            catch (ObjectDisposedException)
+            {
+                //TODO: log
+            }
+            
             WebSocketMap.Remove(apiKey.SubDomain);
         }
 
