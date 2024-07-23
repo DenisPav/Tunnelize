@@ -31,7 +31,8 @@ public static class TcpServer
 
                     await TcpSocket.WriteToTcpSocket(socket);    
                 }
-                
+
+                TcpSocket.Reset();
                 socket.Close();
             }
             catch

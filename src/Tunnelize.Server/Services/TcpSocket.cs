@@ -52,4 +52,13 @@ public static class TcpSocket
 
         await socket.SendAsync(new ArraySegment<byte>(combinedData.ToArray()));
     }
+
+    public static void Reset()
+    {
+        if (DataChannel.Reader.Count == 0)
+            return;
+
+        // ReSharper disable once EmptyEmbeddedStatement
+        while (DataChannel.Reader.TryRead(out var _)) ;
+    }
 }
