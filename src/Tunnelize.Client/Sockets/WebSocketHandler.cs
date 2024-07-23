@@ -10,7 +10,7 @@ public static class WebSocketHandler
     
     private static ClientWebSocket? WebSocket;
 
-    public static async void CreateWebSocket(Guid apiKey)
+    public static async Task<bool> CreateWebSocket(Guid apiKey)
     {
         try
         {
@@ -21,8 +21,21 @@ public static class WebSocketHandler
             await WebSocket.ConnectAsync(serverLocation, CancellationToken.None);
 
             IsConnected = true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            IsConnected = false;
+        }
+        
+        return IsConnected;
+    }
 
-            while (WebSocket.State == WebSocketState.Open)
+    public static async void HandleWebSocket()
+    {
+        try
+        {
+            while (WebSocket!.State == WebSocketState.Open)
             {
                 await ReadFromSocket(WebSocket);
                 await WriteToSocket(WebSocket);
@@ -36,6 +49,7 @@ public static class WebSocketHandler
         {
             IsConnected = false;
         }
+        
     }
 
     public static void CloseSocket()

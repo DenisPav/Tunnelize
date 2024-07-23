@@ -34,7 +34,8 @@ public class ConnectSocket : IRouteMapper
             .FirstOrDefaultAsync(cancellationToken);
 
         TcpSocketHandler.Port = request.Port;
-        WebSocketHandler.CreateWebSocket(activeApiKey!.Value);
-        return new RazorComponentResult<Dashboard>(new { IsConnected = true });
+        var isConnected = await WebSocketHandler.CreateWebSocket(activeApiKey!.Value);
+        WebSocketHandler.HandleWebSocket();
+        return new RazorComponentResult<Dashboard>(new { IsConnected = isConnected });
     }
 }
