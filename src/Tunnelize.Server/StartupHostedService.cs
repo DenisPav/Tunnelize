@@ -7,7 +7,7 @@ namespace Tunnelize.Server;
 public class StartupHostedService(
     IServiceScopeFactory serviceScopeFactory,
     ILogger<StartupHostedService> log)
-    : IHostedService
+    : IHostedLifecycleService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -22,10 +22,25 @@ public class StartupHostedService(
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
+        => Task.CompletedTask;
+
+    public Task StartedAsync(CancellationToken cancellationToken)
+        => Task.CompletedTask;
+
+    public Task StartingAsync(CancellationToken cancellationToken)
+        => Task.CompletedTask;
+
+    public Task StoppedAsync(CancellationToken cancellationToken)
+        => Task.CompletedTask;
+
+    public Task StoppingAsync(CancellationToken cancellationToken)
     {
         log.LogInformation("Performing shutdown tasks");
         log.LogInformation("Stopping TCP listener");
         TcpServer.Stop();
+        
+        log.LogInformation("Aborting open web sockets");
+        HandleWebSocketMiddleware.CloseAll();
         
         return Task.CompletedTask;
     }

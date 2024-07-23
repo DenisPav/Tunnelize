@@ -6,17 +6,19 @@ namespace Tunnelize.Server.Services;
 public static class TcpServer
 {
     private static TcpListener _listener = null!;
-    
+    private static CancellationTokenSource _cancellationTokenSource = null!;
+
     public static async void CreateTcpListener(CancellationToken cancellationToken)
     {
+        _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         _listener = new TcpListener(IPAddress.Loopback, 8080);
         _listener.Start();
 
-        while (cancellationToken.IsCancellationRequested == false)
+        while (_cancellationTokenSource.Token.IsCancellationRequested == false)
         {
             try
             {
-                var socket = await _listener.AcceptSocketAsync(cancellationToken);
+                var socket = await _listener.AcceptSocketAsync(_cancellationTokenSource.Token);
 
                 var hostName = await TcpSocket.ReadFromTcpSocket(socket);
                 var dotIndex = hostName.IndexOf('.');
@@ -44,7 +46,6 @@ public static class TcpServer
 
     public static void Stop()
     {
-        _listener.Stop();
-        _listener.Dispose();
+        _cancellationTokenSource.Cancel();
     }
 }

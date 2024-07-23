@@ -100,4 +100,12 @@ public class HandleWebSocketMiddleware : IMiddleware
                 CancellationToken.None);
         }
     }
+
+    public static void CloseAll()
+    {
+        foreach (var webSocket in WebSocketMap.Values)
+        {
+            webSocket.Abort();
+        }
+    }
 }
