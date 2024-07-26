@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.WebSockets;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Tunnelize.Server;
 using Tunnelize.Server.Components;
+using Tunnelize.Server.Emails;
 using Tunnelize.Server.Persistence;
 using Tunnelize.Server.Routes;
 using Tunnelize.Server.Services;
@@ -32,6 +34,11 @@ builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHostedService<StartupHostedService>();
 builder.Services.AddTunnelizeServer();
+builder.Services.AddOptions<EmailSenderOptions>()
+    .BindConfiguration("Email")
+    .ValidateOnStart();
+builder.Services.AddSingleton<IValidateOptions<EmailSenderOptions>, EmailSenderOptionsValidator>();
+builder.Services.AddSingleton<EmailSenderOptions>(sp => sp.GetRequiredService<IOptions<EmailSenderOptions>>().Value);
 var app = builder.Build();
 
 app.UseWebSockets();

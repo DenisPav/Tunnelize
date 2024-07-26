@@ -5,15 +5,15 @@ using Mailjet.Client.TransactionalEmails;
 namespace Tunnelize.Server.Emails;
 
 [RegisterScoped]
-public class EmailSender(ILogger<EmailSender> log) : IEmailSender
+public class EmailSender(
+    EmailSenderOptions opts,
+    ILogger<EmailSender> log) : IEmailSender
 {
     public async Task SendEmail(
         string content,
         string to)
     {
-        var client = new MailjetClient(
-            "-",
-            "-");
+        var client = new MailjetClient(opts.ApiKey, opts.ApiKeySecret);
 
         var email = new TransactionalEmailBuilder()
             .WithFrom(new SendContact("denis.pav@hotmail.com"))
@@ -25,7 +25,7 @@ public class EmailSender(ILogger<EmailSender> log) : IEmailSender
         log.LogDebug("Sending email!");
         var response = await client.SendTransactionalEmailAsync(email);
         var hasErrors = response.Messages is null
-                        || response.Messages.Any(x => x.Errors.Count != 0);
+                        || response.Messages.Any(x => x.Errors?.Count != 0);
         if (hasErrors)
         {
             log.LogWarning("Failed sending email: [{reason}]",
