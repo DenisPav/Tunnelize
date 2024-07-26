@@ -17,7 +17,11 @@ public static class WebSocketHandler
             WebSocket = new ClientWebSocket();
             WebSocket.Options.SetRequestHeader("x-tunnelize-key", apiKey.ToString());
             WebSocket.Options.RemoteCertificateValidationCallback = (_, _, _, _) => true;
-            var serverLocation = new Uri("ws://localhost:5000");
+            var serverLocation = new Uri("wss://tunnelize.xyz");
+            
+#if DEBUG
+            serverLocation = new Uri("ws://localhost:5000");
+#endif
             await WebSocket.ConnectAsync(serverLocation, CancellationToken.None);
 
             IsConnected = true;
