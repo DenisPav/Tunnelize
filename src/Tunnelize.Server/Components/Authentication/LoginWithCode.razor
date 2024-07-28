@@ -10,14 +10,22 @@
         <div class="col">
             <h2>Tunnelize</h2>
 
-            <fieldset hx-target="fieldset">
+            <fieldset hx-target=".vertical">
                 <legend>Login</legend>
                 <form hx-post="/api/authentication/login/code" hx-swap="outerHTML">
                     <AntiforgeryToken/>
 
                     <div>
                         <label>Code</label>
-                        <input type="text" name="code" placeholder="******">
+                        @if (HasErrors)
+                        {
+                            <input class="error" type="text" name="code" placeholder="******">
+                            <span>Code has to be valid!</span>
+                        }
+                        else
+                        {
+                            <input type="text" name="code" placeholder="******">
+                        }
                     </div>
 
                     <br>
@@ -37,3 +45,7 @@
         </div>
     </div>
 </div>
+
+@code {
+    [Parameter] public bool HasErrors { get; set; }
+}
