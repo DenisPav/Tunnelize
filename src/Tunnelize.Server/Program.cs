@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.WebSockets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Tunnelize.Server;
+using Tunnelize.Server.Authentication;
 using Tunnelize.Server.Components;
 using Tunnelize.Server.Emails;
 using Tunnelize.Server.Persistence;
@@ -33,6 +34,7 @@ builder.Services.AddAuthentication("loginCookie")
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHostedService<StartupHostedService>();
+builder.Services.AddHostedService<AuthCodeCleanerBackgroundService>();
 builder.Services.AddTunnelizeServer();
 builder.Services.AddOptions<EmailSenderOptions>()
     .BindConfiguration("Email")
