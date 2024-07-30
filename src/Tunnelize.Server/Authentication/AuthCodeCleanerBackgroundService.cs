@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Tunnelize.Server.Codes;
 using Tunnelize.Server.Persistence;
 using Tunnelize.Server.Persistence.Entities;
 
 namespace Tunnelize.Server.Authentication;
 
 public class AuthCodeCleanerBackgroundService(
-    ILogger<AuthCodeGenerator> log,
+    ILogger<CodeGenerator> log,
     IServiceScopeFactory serviceScopeFactory) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

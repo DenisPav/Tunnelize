@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tunnelize.Server.Authentication;
+using Tunnelize.Server.Codes;
 using Tunnelize.Server.Components.Authentication;
 using Tunnelize.Server.Persistence;
 using Tunnelize.Server.Persistence.Entities;
@@ -24,7 +25,7 @@ public class Login : IRouteMapper
         [FromForm] LoginRequest request,
         IAuthenticationService authenticationService,
         IValidator<LoginRequest> validator,
-        IAuthCodeGenerator authCodeGenerator,
+        ICodeGenerator authCodeGenerator,
         DatabaseContext db,
         HttpContext context,
         CancellationToken cancellationToken)
@@ -52,7 +53,7 @@ public class Login : IRouteMapper
             return new RazorComponentResult<LoginForm>(new { IsCombinationInvalid = true });
         }
 
-        await authCodeGenerator.Generate(targetedUser, cancellationToken);
+        await authCodeGenerator.GenerateAuthCode(targetedUser, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
         
         context.Response.Headers.Append("HX-Redirect", "/login/code");

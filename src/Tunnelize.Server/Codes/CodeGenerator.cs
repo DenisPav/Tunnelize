@@ -4,23 +4,23 @@ using Tunnelize.Server.Emails;
 using Tunnelize.Server.Persistence;
 using Tunnelize.Server.Persistence.Entities;
 
-namespace Tunnelize.Server.Authentication;
+namespace Tunnelize.Server.Codes;
 
 [RegisterScoped]
-public class AuthCodeGenerator(
+public class CodeGenerator(
     IEmailSender emailSender,
     DatabaseContext db,
-    ILogger<AuthCodeGenerator> log) : IAuthCodeGenerator
+    ILogger<CodeGenerator> log) : ICodeGenerator
 {
     private const short AuthCodeLength = 6;
     private const string CodeAlphabet = "ABCDEFGHIJKLMNOPRSTUVZXWQ123456789";
     private static readonly int AlphabetLength = CodeAlphabet.Length;
 
-    public async Task<UserCode> Generate(
+    public async Task<UserCode> GenerateAuthCode(
         User user,
         CancellationToken cancellationToken)
     {
-        var code = GenerateAuthCode();
+        var code = GenerateCode(AuthCodeLength);
         var userCode = new UserCode
         {
             Code = code,
@@ -35,9 +35,15 @@ public class AuthCodeGenerator(
         return userCode;
     }
 
-    private static string GenerateAuthCode()
+    public string GenerateWildCardDomainCode()
     {
-        var codeBytes = RandomNumberGenerator.GetBytes(AuthCodeLength);
+        var subdomainCode = GenerateCode(10);
+        return subdomainCode.ToLower();
+    }
+
+    private static string GenerateCode(int length)
+    {
+        var codeBytes = RandomNumberGenerator.GetBytes(length);
         var characters = codeBytes.Select(x =>
             {
                 var result = x % AlphabetLength;
