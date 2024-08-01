@@ -1,0 +1,43 @@
+name: Deploy Tunnelize.Server
+
+on:
+  pull_request:
+    branches: [ deploy ]
+    types: [ closed ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 8.0.*
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Restore dotnet tools
+      run: dotnet tool restore
+    - name: Cake build
+      run: dotnet cake
+    - name: SCP deploy
+      uses: appleboy/scp-action@v0.0.8
+      with:
+        host: ${{secrets.DEPLOY_HOST}}
+        key: ${{secrets.DEPLOY_KEY}}
+        passphrase: ${{secrets.DEPLOY_KEY_PASS}}
+        username: ${{secrets.DEPLOY_USER}}
+        target: ${{secrets.DEPLOY_PATH}}
+        source: /home/runner/work/Tunnelize/Tunnelize/src/Tunnelize.Server/bin/Release/net8.0/publish/*
+        strip_components: 8
+        overwrite: true
+    - name: Restart APP
+      uses: appleboy/ssh-action@v0.0.8
+      with:
+        host: ${{secrets.DEPLOY_HOST}}
+        key: ${{secrets.DEPLOY_KEY}}
+        passphrase: ${{secrets.DEPLOY_KEY_PASS}}
+        username: ${{secrets.DEPLOY_USER}}
+        script: systemctl tunnelize.service stop ; systemctl tunnelize.service start
