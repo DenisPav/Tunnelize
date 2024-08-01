@@ -40,4 +40,4 @@ jobs:
         key: ${{secrets.DEPLOY_KEY}}
         passphrase: ${{secrets.DEPLOY_KEY_PASS}}
         username: ${{secrets.DEPLOY_USER}}
-        script: systemctl tunnelize.service stop ; systemctl tunnelize.service start
+        script: systemctl stop tunnelize.service ; systemctl start tunnelize.service
