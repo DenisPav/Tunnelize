@@ -13,13 +13,11 @@ public class Logout : IRouteMapper
         builder.MapPost("/api/authentication/logout", Handle);
     }
 
-    private static async Task<EmptyHttpResult> Handle(
+    private static async Task<IResult> Handle(
         HttpContext context,
         [FromServices] IAuthenticationService authenticationService)
     {
-        context.Response.Headers.Append("HX-Redirect", "/login");
         await authenticationService.SignOutAsync(context, Schemes.LoginCookie, null);
-
-        return TypedResults.Empty;
+        return context.HtmxRedirect("/login");
     }
 }

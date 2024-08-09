@@ -9,9 +9,6 @@ public class GetApiKeyForm : IRouteMapper
         builder.MapGet("/api/api-keys/form", Handle);
     }
 
-    private static IResult Handle(HttpContext context)
-    {
-        context.Response.Headers.Append("HX-Redirect", "/add");
-        return Results.Empty;
-    }
+    private static IResult Handle(HttpContext context) 
+        => context.HtmxRedirect("/add");
 }

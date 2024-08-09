@@ -56,7 +56,6 @@ public class Login : IRouteMapper
         await authCodeGenerator.GenerateAuthCode(targetedUser, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
         
-        context.Response.Headers.Append("HX-Redirect", "/login/code");
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, targetedUser.Id.ToString()), 
@@ -67,6 +66,6 @@ public class Login : IRouteMapper
         await authenticationService.SignInAsync(context, Schemes.IntermediateCookie, principal,
             null);
 
-        return TypedResults.Empty;
+        return context.HtmxRedirect("/login/code");
     }
 }

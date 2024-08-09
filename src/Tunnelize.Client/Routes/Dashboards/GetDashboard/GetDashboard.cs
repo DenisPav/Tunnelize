@@ -9,9 +9,6 @@ public class GetDashboard : IRouteMapper
         builder.MapGet("/api/dashboards", Handle);
     }
 
-    private static IResult Handle(HttpContext context)
-    {
-        context.Response.Headers.Append("HX-Redirect", "/");
-        return Results.Empty;
-    }
+    private static IResult Handle(HttpContext context) 
+        => context.HtmxRedirect( "/");
 }

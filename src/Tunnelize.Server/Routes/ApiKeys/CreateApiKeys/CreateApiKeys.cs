@@ -25,7 +25,7 @@ public class CreateApiKeys : IRouteMapper
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (validationResult.IsValid == false)
         {
-            return new RazorComponentResult<Create>(new { HasErrors = true });    
+            return new RazorComponentResult<Create>(new { HasErrors = true });
         }
 
         var entity = new ApiKeyMapper().MapFromRequest(request);
@@ -33,8 +33,7 @@ public class CreateApiKeys : IRouteMapper
 
         await db.Set<ApiKey>().AddAsync(entity, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
-        
-        context.Response.Headers.Append("HX-Redirect", "/dashboard");
-        return Results.Empty;
+
+        return context.HtmxRedirect("/dashboard");
     }
 }

@@ -62,7 +62,6 @@ public class LoginCode : IRouteMapper
 
         await userCodeQuery.ExecuteDeleteAsync(cancellationToken);
 
-        context.Response.Headers.Append("HX-Redirect", "/dashboard");
-        return Results.Empty;
+        return context.HtmxRedirect("/dashboard");
     }
 }

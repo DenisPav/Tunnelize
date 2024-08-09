@@ -37,7 +37,6 @@ public class AddApiKey : IRouteMapper
         await db.Set<ApiKey>().AddAsync(apiKey, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
 
-        context.Response.Headers.Append("HX-Redirect", "/");
-        return Results.Empty;
+        return context.HtmxRedirect("/");
     }
 }
