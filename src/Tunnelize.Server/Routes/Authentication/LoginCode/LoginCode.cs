@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Tunnelize.Server.Authentication;
 using Tunnelize.Server.Components.Authentication;
 using Tunnelize.Server.Persistence;
 using Tunnelize.Server.Persistence.Entities;
@@ -32,7 +33,7 @@ public class LoginCode : IRouteMapper
             return new RazorComponentResult<LoginWithCode>(new { HasErrors = true });
         }
 
-        var cookieResult = await authenticationService.AuthenticateAsync(context, "intermediateCookie");
+        var cookieResult = await authenticationService.AuthenticateAsync(context, Schemes.IntermediateCookie);
         var currentUserId = cookieResult.Principal?.GetUserId();
 
         var currentDateTime = DateTime.UtcNow;
@@ -47,16 +48,16 @@ public class LoginCode : IRouteMapper
             return new RazorComponentResult<LoginWithCode>(new { HasErrors = true });
         }
 
-        await authenticationService.SignOutAsync(context, "intermediateCookie", null);
+        await authenticationService.SignOutAsync(context, Schemes.IntermediateCookie, null);
 
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, targetedUser.Id.ToString()),
             new Claim(ClaimTypes.Name, targetedUser.Email)
         };
-        var claimsIdentity = new ClaimsIdentity(claims, "loginCookie");
+        var claimsIdentity = new ClaimsIdentity(claims, Schemes.LoginCookie);
         var principal = new ClaimsPrincipal(claimsIdentity);
-        await authenticationService.SignInAsync(context, "loginCookie", principal,
+        await authenticationService.SignInAsync(context, Schemes.LoginCookie, principal,
             null);
 
         await userCodeQuery.ExecuteDeleteAsync(cancellationToken);

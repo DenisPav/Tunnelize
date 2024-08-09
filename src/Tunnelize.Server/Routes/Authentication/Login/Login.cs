@@ -62,9 +62,9 @@ public class Login : IRouteMapper
             new Claim(ClaimTypes.NameIdentifier, targetedUser.Id.ToString()), 
             new Claim(ClaimTypes.Name, targetedUser.Email)
         };
-        var claimsIdentity = new ClaimsIdentity(claims, "intermediateCookie");
+        var claimsIdentity = new ClaimsIdentity(claims, Schemes.IntermediateCookie);
         var principal = new ClaimsPrincipal(claimsIdentity);
-        await authenticationService.SignInAsync(context, "intermediateCookie", principal,
+        await authenticationService.SignInAsync(context, Schemes.IntermediateCookie, principal,
             null);
 
         return TypedResults.Empty;

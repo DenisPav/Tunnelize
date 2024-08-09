@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Tunnelize.Server.Authentication;
 using Tunnelize.Shared.Routes;
 
 namespace Tunnelize.Server.Routes.Authentication.Logout;
@@ -17,7 +18,7 @@ public class Logout : IRouteMapper
         [FromServices] IAuthenticationService authenticationService)
     {
         context.Response.Headers.Append("HX-Redirect", "/login");
-        await authenticationService.SignOutAsync(context, "loginCookie", null);
+        await authenticationService.SignOutAsync(context, Schemes.LoginCookie, null);
 
         return TypedResults.Empty;
     }
