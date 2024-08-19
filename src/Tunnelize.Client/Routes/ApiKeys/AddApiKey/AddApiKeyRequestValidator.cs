@@ -21,7 +21,7 @@ public class AddApiKeyRequestValidator : AbstractValidator<AddApiKeyRequest>
     }
 
     private async Task<bool> IsNotAlreadyAdded(
-        Guid key, 
+        string key, 
         CancellationToken cancellationToken)
     {
         var apiKeyAlreadyUsed = await _db.Set<ApiKey>()

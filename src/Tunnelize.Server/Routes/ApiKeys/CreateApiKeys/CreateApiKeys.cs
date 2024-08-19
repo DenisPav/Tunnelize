@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Tunnelize.Server.Codes;
 using Tunnelize.Server.Components.ApiKeys;
 using Tunnelize.Server.Persistence;
 using Tunnelize.Server.Persistence.Entities;
@@ -18,6 +19,7 @@ public class CreateApiKeys : IRouteMapper
     private static async Task<IResult> Handle(
         [FromForm] CreateApiKeyRequest request,
         IValidator<CreateApiKeyRequest> validator,
+        ICodeGenerator codeGenerator,
         DatabaseContext db,
         CancellationToken cancellationToken,
         HttpContext context)
@@ -30,6 +32,7 @@ public class CreateApiKeys : IRouteMapper
 
         var entity = new ApiKeyMapper().MapFromRequest(request);
         entity.UserId = context.GetUserId();
+        entity.Key = codeGenerator.GenerateApiKeyCode();
 
         await db.Set<ApiKey>().AddAsync(entity, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);

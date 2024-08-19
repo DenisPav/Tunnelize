@@ -1,14 +1,14 @@
 ﻿@using Tunnelize.Server.Routes.ApiKeys
 <table hx-target="closest tr">
     <tr>
-        <th>ID</th>
+        <th>Api Key</th>
         <th>Subdomain</th>
         <th class="pull-right">Actions</th>
     </tr>
     @foreach (var apiKey in ApiKeys)
     {
         <tr>
-            <td>@apiKey.Id</td>
+            <td>@apiKey.Key</td>
             <td>
                 @apiKey.SubDomain
             </td>

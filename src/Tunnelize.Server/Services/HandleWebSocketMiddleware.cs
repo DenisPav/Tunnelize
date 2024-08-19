@@ -25,15 +25,9 @@ public class HandleWebSocketMiddleware : IMiddleware
         
         context.Request.Headers.TryGetValue(TunnelizeHeaderKey, out var apiKeyHeader);
         var apiKeyStringValue = apiKeyHeader.FirstOrDefault();
-        if (Guid.TryParse(apiKeyStringValue, out var parsedApiKey) == false)
-        {
-            await next(context);
-            return;
-        }
-
         var databaseContext = context.RequestServices.GetRequiredService<DatabaseContext>();
         var apiKey = await databaseContext.Set<ApiKey>()
-            .SingleOrDefaultAsync(x => x.Id == parsedApiKey, context.RequestAborted);
+            .SingleOrDefaultAsync(x => x.Key == apiKeyStringValue, context.RequestAborted);
         if (apiKey is null)
         {
             await next(context);
