@@ -10,12 +10,12 @@ public static class WebSocketHandler
     
     private static ClientWebSocket? WebSocket;
 
-    public static async Task<bool> CreateWebSocket(Guid apiKey)
+    public static async Task<bool> CreateWebSocket(string apiKey)
     {
         try
         {
             WebSocket = new ClientWebSocket();
-            WebSocket.Options.SetRequestHeader("x-tunnelize-key", apiKey.ToString());
+            WebSocket.Options.SetRequestHeader("x-tunnelize-key", apiKey);
             WebSocket.Options.RemoteCertificateValidationCallback = (_, _, _, _) => true;
             var serverLocation = new Uri("wss://tunnelize.xyz");
             

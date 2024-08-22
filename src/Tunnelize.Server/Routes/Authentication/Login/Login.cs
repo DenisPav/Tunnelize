@@ -56,17 +56,16 @@ public class Login : IRouteMapper
         await authCodeGenerator.GenerateAuthCode(targetedUser, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
         
-        context.Response.Headers.Append("HX-Redirect", "/login/code");
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, targetedUser.Id.ToString()), 
             new Claim(ClaimTypes.Name, targetedUser.Email)
         };
-        var claimsIdentity = new ClaimsIdentity(claims, "intermediateCookie");
+        var claimsIdentity = new ClaimsIdentity(claims, Schemes.IntermediateCookie);
         var principal = new ClaimsPrincipal(claimsIdentity);
-        await authenticationService.SignInAsync(context, "intermediateCookie", principal,
+        await authenticationService.SignInAsync(context, Schemes.IntermediateCookie, principal,
             null);
 
-        return TypedResults.Empty;
+        return context.HtmxRedirect("/login/code");
     }
 }

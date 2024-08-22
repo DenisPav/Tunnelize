@@ -15,8 +15,8 @@ builder.Services.AddDbContext<DatabaseContext>(opts =>
 builder.Services.AddWebSockets(_ => { });
 builder.Services.AddAntiforgery(opts => { opts.Cookie.Name = "af"; });
 builder.Services.AddRazorComponents();
-builder.Services.AddAuthentication("loginCookie")
-    .AddCookie("intermediateCookie", opts =>
+builder.Services.AddAuthentication(Schemes.LoginCookie)
+    .AddCookie(Schemes.IntermediateCookie, opts =>
     {
         opts.Cookie.Name = "ak";
         opts.LoginPath = "/login";
@@ -24,7 +24,7 @@ builder.Services.AddAuthentication("loginCookie")
         opts.ReturnUrlParameter = "ru";
         opts.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     })
-    .AddCookie("loginCookie", opts =>
+    .AddCookie(Schemes.LoginCookie, opts =>
     {
         opts.Cookie.Name = "akc";
         opts.LoginPath = "/login";
@@ -49,6 +49,6 @@ app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorComponents<App>().RequireAuthorization(opts => opts.RequireAuthenticatedUser()
-    .AddAuthenticationSchemes("loginCookie"));
+    .AddAuthenticationSchemes(Schemes.LoginCookie));
 app.MapRoutes();
 app.Run();

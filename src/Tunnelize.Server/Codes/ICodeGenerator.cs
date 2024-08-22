@@ -9,4 +9,5 @@ public interface ICodeGenerator
         CancellationToken cancellationToken);
 
     string GenerateWildCardDomainCode();
+    string GenerateApiKeyCode();
 }

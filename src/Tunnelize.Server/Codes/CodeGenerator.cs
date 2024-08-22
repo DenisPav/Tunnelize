@@ -13,6 +13,8 @@ public class CodeGenerator(
     ILogger<CodeGenerator> log) : ICodeGenerator
 {
     private const short AuthCodeLength = 6;
+    private const short WildCardLength = 10;
+    private const short ApiKeyLength = 50;
     private const string CodeAlphabet = "ABCDEFGHIJKLMNOPRSTUVZXWQ123456789";
     private static readonly int AlphabetLength = CodeAlphabet.Length;
 
@@ -37,7 +39,13 @@ public class CodeGenerator(
 
     public string GenerateWildCardDomainCode()
     {
-        var subdomainCode = GenerateCode(10);
+        var subdomainCode = GenerateCode(WildCardLength);
+        return subdomainCode.ToLower();
+    }
+    
+    public string GenerateApiKeyCode()
+    {
+        var subdomainCode = GenerateCode(ApiKeyLength);
         return subdomainCode.ToLower();
     }
 

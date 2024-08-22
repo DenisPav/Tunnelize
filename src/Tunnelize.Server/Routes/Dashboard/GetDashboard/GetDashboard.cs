@@ -10,8 +10,5 @@ public class GetDashboard : IRouteMapper
     }
 
     private static IResult Handle(HttpContext context)
-    {
-        context.Response.Headers.Append("HX-Redirect", "/dashboard");
-        return Results.Empty;
-    }
+        => context.HtmxRedirect("/dashboard");
 }

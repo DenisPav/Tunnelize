@@ -21,8 +21,7 @@ public class DeleteApiKey : IRouteMapper
         await db.Set<ApiKey>()
             .Where(x => x.Id == id)
             .ExecuteDeleteAsync(cancellationToken);
-        
-        context.Response.Headers.Append("HX-Redirect", "/");
-        return Results.Empty;
+
+        return context.HtmxRedirect("/");
     }
 }

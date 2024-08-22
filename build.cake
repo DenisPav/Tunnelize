@@ -3,14 +3,21 @@ var target = Argument("target", "Publish");
 Task("Publish")
     .Does(() => 
     {
-        Information("Trying to publish application");
+        Information("Cleaning old release files!");
+
+        DotNetClean("./", new DotNetCleanSettings 
+        {
+            Configuration = "Release"
+        });
+
+        Information("Trying to publish Tunnelize applications!");
 
         DotNetPublish("./", new DotNetPublishSettings 
         {
             Configuration = "Release"
         });
 
-        Information("Publish done");
+        Information("Publish done!");
     });
 
  RunTarget(target);

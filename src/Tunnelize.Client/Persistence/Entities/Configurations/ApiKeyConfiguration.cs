@@ -13,6 +13,8 @@ public class ApiKeyConfiguration : IEntityTypeConfiguration<ApiKey>
             .ValueGeneratedOnAdd();
 
         builder.Property(x => x.Value)
+            .HasMaxLength(50)
+            .IsFixedLength()
             .IsRequired();
 
         builder.Property(x => x.Description)
@@ -21,5 +23,8 @@ public class ApiKeyConfiguration : IEntityTypeConfiguration<ApiKey>
         builder.Property(x => x.IsActive)
             .IsRequired()
             .HasDefaultValue(false);
+        
+        builder.HasIndex(x => x.Value)
+            .IsUnique();
     }
 }

@@ -3,6 +3,10 @@
 @using Tunnelize.Server.Codes
 @inject ICodeGenerator CodeGenerator
 
+@{
+    var generatedSubdomain = CodeGenerator.GenerateWildCardDomainCode();
+}
+
 <div id="create-form" class="vertical" hx-target="#create-form">
     <div class="row">
         <div class="col"></div>
@@ -13,7 +17,7 @@
         </div>
         <div class="col"></div>
     </div>
-    
+
     <div class="row">
         <div class="col">
         </div>
@@ -29,12 +33,14 @@
                         <label>Subdomain</label>
                         @if (HasErrors)
                         {
-                            <input class="error" type="text" name="subdomain" placeholder="***">
+                            <input class="error" type="text" name="subdomain-preview" placeholder="***" value="@generatedSubdomain">
+                            <input type="hidden" name="subdomain" placeholder="***" value="@generatedSubdomain">
                             <span>Can't be empty or already used!</span>
                         }
                         else
                         {
-                            <input type="text" name="subdomain" placeholder="***" value="@CodeGenerator.GenerateWildCardDomainCode()">
+                            <input type="text" disabled name="subdomain-preview" placeholder="***" value="@generatedSubdomain">
+                            <input type="hidden" name="subdomain" placeholder="***" value="@generatedSubdomain">
                         }
 
                     </div>
