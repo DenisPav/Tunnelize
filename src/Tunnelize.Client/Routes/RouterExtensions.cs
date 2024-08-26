@@ -20,6 +20,7 @@ public static class RouterExtensions
         builder.MapRoute<AddApiKey>();
         builder.MapRoute<ListApiKeys>();
         builder.MapRoute<DeleteApiKey>();
+        builder.MapRoute<UpdateApiKey>();
         
         builder.MapRoute<GetDashboard>();
     }
