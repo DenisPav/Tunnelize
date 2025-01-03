@@ -1,6 +1,6 @@
 # Tunnelize
 
-Simple "tunneling" software made in C#.
+Simple "tunneling" software made in C#. Made as a  example/showcase project.
 
 ## Project structure 📁
  - `Tunnelize.Client` - code for local client application
